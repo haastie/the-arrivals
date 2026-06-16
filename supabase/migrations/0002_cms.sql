@@ -79,10 +79,10 @@ create table if not exists admin_config (
   constraint admin_config_singleton check (id = 1)
 );
 
--- Admin-secret: willekeurig, eenmalig. Opzoeken via:
---   select admin_secret from admin_config;
+-- Admin-secret voor /admin?key=...  Wijzig later desgewenst via:
+--   update admin_config set admin_secret = '<nieuw>' where id = 1;
 insert into admin_config (id, admin_secret)
-values (1, replace(gen_random_uuid()::text, '-', ''))
+values (1, '82ffc097ed7b30bce97a66763490f75b')
 on conflict (id) do nothing;
 
 -- ----------------------------------------------------------------------------
