@@ -1,4 +1,5 @@
 import { rankParticipants } from '../lib/score'
+import { useContent } from '../content/content'
 import type { AnswerRow, ParticipantRow } from '../lib/db-types'
 
 const medal = ['🥇', '🥈', '🥉']
@@ -16,7 +17,8 @@ export function Leaderboard({
   showTimeline?: boolean
   compact?: boolean
 }) {
-  const ranked = rankParticipants(participants, answers)
+  const { timelineQuestionIds } = useContent()
+  const ranked = rankParticipants(participants, answers, timelineQuestionIds)
 
   if (ranked.length === 0) {
     return <p className="text-sm text-ink/50">Nog geen deelnemers.</p>

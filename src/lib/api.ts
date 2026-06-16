@@ -38,25 +38,7 @@ export async function joinSession(joinCode: string, name: string): Promise<Joine
 }
 
 // --- Antwoorden ----------------------------------------------------------
-
-export async function submitWarmupAnswer(args: {
-  sessionId: string
-  participantId: string
-  questionId: string
-  response: string
-  correct: boolean
-  points: number
-}) {
-  const { error } = await supabase.rpc('submit_warmup_answer', {
-    p_session_id: args.sessionId,
-    p_participant_id: args.participantId,
-    p_question_id: args.questionId,
-    p_response: args.response,
-    p_correct: args.correct,
-    p_points: args.points,
-  })
-  if (error) throw new Error(error.message)
-}
+// (Warm-up scoort lokaal in de browser — geen DB-schrijfactie meer; zie warmupLocal.ts)
 
 export async function submitLiveAnswer(args: {
   sessionId: string
@@ -123,34 +105,22 @@ export async function hostClearActive(sessionId: string, secret: string) {
   if (error) throw new Error(error.message)
 }
 
-export async function hostRevealMc(args: {
-  sessionId: string
-  secret: string
-  questionId: string
-  correctIndex: number
-  points: number
-}) {
+export async function hostRevealMc(args: { sessionId: string; secret: string; questionId: string }) {
+  // correct_index + points worden server-side uit de questions-tabel gelezen.
   const { error } = await supabase.rpc('host_reveal_mc', {
     p_session_id: args.sessionId,
     p_host_secret: args.secret,
     p_question_id: args.questionId,
-    p_correct_index: args.correctIndex,
-    p_points: args.points,
   })
   if (error) throw new Error(error.message)
 }
 
-export async function hostJudgeOpen(args: {
-  answerId: string
-  secret: string
-  correct: boolean
-  points: number
-}) {
+export async function hostJudgeOpen(args: { answerId: string; secret: string; correct: boolean }) {
+  // points wordt server-side uit de questions-tabel gelezen.
   const { error } = await supabase.rpc('host_judge_open', {
     p_answer_id: args.answerId,
     p_host_secret: args.secret,
     p_correct: args.correct,
-    p_points: args.points,
   })
   if (error) throw new Error(error.message)
 }

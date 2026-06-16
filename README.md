@@ -28,10 +28,12 @@ UI en content zijn volledig in het **Nederlands**.
 
 | Route      | Wat                                                                  |
 | ---------- | -------------------------------------------------------------------- |
-| `/`        | Landing: intro + "Doe mee" en (klein) "Host".                        |
+| `/`        | Landing: intro + "Doe mee", "Thuis oefenen" en (klein) "Host".       |
 | `/join`    | Naam + 6-teken sessiecode (of via QR-deeplink `/join?code=XXXX`).    |
-| `/play`    | Deelnemersapp (warm-up of live, afhankelijk van de sessiefase).      |
+| `/play`    | Deelnemersapp (lobby of live, afhankelijk van de sessiefase).        |
 | `/master`  | Host-control. Sessie + `host_secret` zitten in de URL (`?s=&secret=`).|
+| `/warmup`  | Sessie-loze oefen-warm-up (thuis); scoort lokaal, telt **niet** mee. |
+| `/admin`   | Content-CMS achter een geheime sleutel (`/admin?key=<admin_secret>`).|
 
 ---
 
@@ -49,10 +51,17 @@ Er is al een project aangemaakt: **`lsagvpllpdouwwjmiwrz`**
 (URL: `https://lsagvpllpdouwwjmiwrz.supabase.co`).
 
 1. Open het project op [supabase.com](https://supabase.com/dashboard/project/lsagvpllpdouwwjmiwrz).
-2. **SQL Editor** → plak de inhoud van [`supabase/migrations/0001_init.sql`](./supabase/migrations/0001_init.sql) → **Run**.
-   Dit maakt de tabellen, RLS-policies, RPC-functies en realtime-publicatie aan. De migratie is
-   idempotent — opnieuw draaien is veilig.
-3. **Project Settings → API** → kopieer de **`anon` public key**.
+2. **SQL Editor** → draai **beide** migraties op volgorde:
+   - [`supabase/migrations/0001_init.sql`](./supabase/migrations/0001_init.sql) — sessies, deelnemers,
+     antwoorden, host-RPC's, realtime.
+   - [`supabase/migrations/0002_cms.sql`](./supabase/migrations/0002_cms.sql) — content-tabellen
+     (stops/vragen/kaartjes/activiteiten/meta), admin-RPC's, DB-gebaseerde scoring, testgereedschap,
+     én de seed-content. Beide zijn idempotent — opnieuw draaien is veilig.
+3. Zoek het **admin-secret** op (voor `/admin`):
+   ```sql
+   select admin_secret from admin_config;
+   ```
+4. **Project Settings → API** → kopieer de **`anon` public key**.
 
 ### 3. Env-vars
 
@@ -75,6 +84,18 @@ npm run dev
 Open de **Network**-URL op je telefoon (zelfde wifi) om mobiel te testen. Open `/master` op de
 hosttelefoon, maak een sessie, en join op een tweede toestel via `/join` of de QR.
 
+### Lokaal end-to-end testen (in je eentje)
+
+Je hebt geen tweede telefoon nodig:
+
+1. Open `/master`, maak een sessie aan en zet de fase op **Wandeling**.
+2. Push een vraag naar de groep ("Stuur").
+3. In het blok **Testgereedschap**: klik een paar keer **+ Testdeelnemer**, daarna
+   **Simuleer antwoorden** — de nepdeelnemers sturen een geldig willekeurig antwoord in.
+4. Bekijk de live-tally, klik **Sluiten** → **Toon antwoord + score**, en zie het leaderboard
+   updaten. Zo test je de hele keten zonder extra toestellen.
+5. Voor een echte tweede speler: open `/join` in een **incognito-venster** (aparte localStorage).
+
 ---
 
 ## Deploy naar Vercel
@@ -96,19 +117,25 @@ vercel --prod # productie
 
 ---
 
-## Vragen aanvullen (host, komende dagen)
+## Content beheren (host, komende dagen) — `/admin`
 
-Alle vragen staan in `content_seed.json`. Een nieuwe vraag toevoegen:
+Alle content (stops, vragen, kaartjes, activiteiten, meta-teksten) staat in de **database** en
+beheer je via de CMS op `/admin` — **instant, zonder redeploy**.
 
-1. Voeg een object toe aan `stops[].questions` (of `warmup.questions`):
-   - **`mc`** → `options[]` + `correctIndex` → automatisch gescoord.
-   - **`open`** → `modelAnswer` (rubric voor de host) → host beoordeelt ✓/✗.
-   - Zet `"isTimeline": true` om mee te tellen voor de Tijdlijn-kern.
-2. Geef een **uniek `id`** (bv. `s4-q4`).
-3. Commit + push → Vercel her-deployt automatisch. De seed zit in de bundle, dus na deploy
-   staat de vraag live; geen database-migratie nodig.
+1. Open `/admin?key=<admin_secret>` (het secret uit `select admin_secret from admin_config;`).
+   Je toestel onthoudt de sleutel daarna.
+2. Kies een tab (Vragen / Stops / Kaartjes / Activiteiten / Instellingen) en klik **+ Nieuw** of
+   **Bewerk**. Voor een vraag: kies type (**mc** met opties + juiste-optie-index, of **open** met
+   modelantwoord), punten, en de 🕰️-vlag om mee te tellen voor de Tijdlijn-kern.
+3. **Opslaan** → meteen live in nieuwe sessies. Laat een ID leeg voor een automatische ID.
 
-> De host hoeft de DB niet aan te raken om content te wijzigen — alleen de seed + redeploy.
+> `content_seed.json` is nu een **back-up/seed-bron** (laadt de begin-inhoud via `0002_cms.sql`),
+> niet meer de live bron. De DB is leidend; bewerk content via `/admin`.
+
+### Warm-up thuis oefenen
+
+Deel de link `/<jouw-domein>/warmup`. Spelers oefenen de warm-up-kaartjes en -vragen zonder sessie
+of login. Het scoort lokaal in hun browser en **telt niet** mee voor het klassement.
 
 ---
 
@@ -117,22 +144,22 @@ Alle vragen staan in `content_seed.json`. Een nieuwe vraag toevoegen:
 Dit is een privé spel voor een kleine groep; de beveiliging is **bewust licht maar netjes**
 ingericht en hier gedocumenteerd:
 
-- **RLS staat aan** op alle tabellen. De anon-rol mag alleen **lezen** (voor realtime); de
-  kolom `host_secret` wordt **nooit** aan anon gegeven (column-level grant), ook niet in
-  realtime-payloads.
-- **Alle schrijfacties lopen via `SECURITY DEFINER`-RPC's** (zie de migratie). Host-acties
-  (fase wisselen, vraag pushen, onthullen/scoren, punten bijstellen) verifiëren het
-  **`host_secret`**. Wie het secret niet heeft, kan niet besturen.
-- **Warm-up-scoring** gebeurt client-side (de client levert correctheid + punten aan de RPC).
-  Een deelnemer zou hier theoretisch kunnen "valsspelen"; voor een vriendengroep is dat
-  acceptabel. De **scorende kern** (live tour) wordt server-gestuurd onthuld door de host.
-- De host-link bevat het `host_secret` in de query — **deel die link niet**.
+- **RLS staat aan** op alle tabellen. De anon-rol mag content **lezen** (voor de app + `/warmup`)
+  en sessie-state lezen (voor realtime); de kolom `host_secret` en de tabel `admin_config`
+  worden **nooit** aan anon gegeven, ook niet in realtime-payloads.
+- **Alle schrijfacties lopen via `SECURITY DEFINER`-RPC's** (zie de migraties). Host-acties
+  (fase wisselen, vraag pushen, onthullen/scoren, punten bijstellen, testdeelnemers) verifiëren
+  het **`host_secret`**; content-bewerkingen verifiëren het **`admin_secret`**.
+- **Scoring leest uit de DB**: bij het onthullen van een mc-vraag of het beoordelen van een open
+  vraag haalt de RPC `correct_index`/`points` uit de `questions`-tabel — niet van de client.
+- **Warm-up** scoort puur lokaal in de browser en schrijft niets naar de DB (alleen oefenen).
+- De host-link bevat het `host_secret`, en `/admin?key=` het `admin_secret` — **deel die links niet**.
 
 ## Aannames (uit de handoff)
 
-- Connectiviteit op straat is redelijk; warm-up content is gebundeld (offline leesbaar),
-  live-modus vereist verbinding. De app herstelt automatisch na een korte verbindingsval
-  (volledige refetch bij her-verbinden, online-worden of terug-focussen).
+- Content komt bij het opstarten uit de DB (over wifi/mobiel internet). De live-modus vereist
+  verbinding; de app herstelt automatisch na een korte verbindingsval (volledige refetch bij
+  her-verbinden, online-worden of terug-focussen).
 - Eén host (Jelle), via geheime link met `host_secret`.
 - Geen accounts/wachtwoorden voor deelnemers — alleen een weergavenaam per sessie.
 - Eén actieve sessie tegelijk volstaat, maar het model staat er meerdere toe.
@@ -140,14 +167,19 @@ ingericht en hier gedocumenteerd:
 ## Projectstructuur
 
 ```
-content_seed.json              # bron van waarheid (content)
-supabase/migrations/0001_init.sql  # schema + RLS + RPC's + realtime
+content_seed.json                  # seed-bron / back-up (geladen via 0002_cms.sql)
+scripts/generate-seed-sql.mjs      # genereert de seed-INSERTs uit content_seed.json
+supabase/migrations/
+  0001_init.sql                    # sessies/deelnemers/antwoorden + host-RPC's + realtime
+  0002_cms.sql                     # content-tabellen + admin-RPC's + DB-scoring + test-RPC's + seed
 src/
-  content/                     # typed loader voor de seed
-  lib/                         # supabase client, RPC-API, identity, scoring
-  hooks/useGameState.ts        # realtime bron-van-waarheid + reconnect
-  components/                  # UI, host-console, warm-up/live views, leaderboard
-  pages/                       # Landing, Join, Play, Master
+  content/                         # ContentProvider/useContent + DB→Content mapper
+  lib/                             # supabase client, RPC-API's (host/admin/test), identity, scoring
+  hooks/useGameState.ts            # realtime bron-van-waarheid + reconnect
+  components/                      # UI, host-console, warm-up/live views, leaderboard
+  components/admin/                # CMS-formulier-engine + veldschema's
+  pages/                           # Landing, Join, Play, Master, Warmup, Admin
+docs/superpowers/                  # spec + implementatieplan
 ```
 
 ## Scripts
@@ -156,4 +188,5 @@ src/
 npm run dev      # dev-server (mobile-first; gebruik de Network-URL op je telefoon)
 npm run build    # type-check + productie-build
 npm run preview  # serveer de productie-build lokaal
+npm test         # unit-tests (mappers, scoring, warm-up-logica)
 ```

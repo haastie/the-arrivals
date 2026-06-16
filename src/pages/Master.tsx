@@ -9,7 +9,7 @@ import {
 import { supabaseConfigured } from '../lib/supabase'
 import { useGameState } from '../hooks/useGameState'
 import type { Phase } from '../lib/db-types'
-import { meta } from '../content/content'
+import { useContentState } from '../content/content'
 import { Button, ConnectionBadge, MultilingualGreeting, Notice, Screen } from '../components/ui'
 import { SetupNeeded } from '../components/SetupNeeded'
 import { FinishView } from '../components/FinishView'
@@ -20,6 +20,7 @@ import {
   HostLeaderboard,
   HostLobby,
   HostQuestionPicker,
+  HostTestTools,
 } from '../components/host'
 
 export default function Master() {
@@ -72,12 +73,15 @@ function HostStart({
   onCreate: () => void
 }) {
   const last = loadLastHostSession()
+  const { content } = useContentState()
   return (
     <Screen className="justify-center">
       <div className="ta-rise flex flex-col gap-5">
         <div>
           <MultilingualGreeting />
-          <h1 className="font-display mt-2 text-3xl font-bold text-paper">Host · {meta.title}</h1>
+          <h1 className="font-display mt-2 text-3xl font-bold text-paper">
+            Host · {content?.meta.title ?? 'The Arrivals'}
+          </h1>
           <p className="mt-1 text-sm text-paper/60">
             Maak een nieuwe sessie aan. Je krijgt een join-code + QR voor de groep.
           </p>
@@ -100,12 +104,13 @@ function HostStart({
 }
 
 function HostConsole({ sessionId, secret }: { sessionId: string; secret: string }) {
+  const { content, loading: contentLoading } = useContentState()
   const { session, participants, answers, loading, connection, error } = useGameState(sessionId)
 
-  if (loading && !session) {
+  if ((loading && !session) || (contentLoading && !content)) {
     return (
       <Screen className="justify-center">
-        <p className="text-center text-paper/50">Sessie laden…</p>
+        <p className="text-center text-paper/50">Laden…</p>
       </Screen>
     )
   }
@@ -117,6 +122,14 @@ function HostConsole({ sessionId, secret }: { sessionId: string; secret: string 
         <a href="/master" className="text-center text-sm text-paper/60 underline">
           Nieuwe sessie
         </a>
+      </Screen>
+    )
+  }
+
+  if (!content) {
+    return (
+      <Screen className="justify-center">
+        <Notice tone="error">Content kon niet laden.</Notice>
       </Screen>
     )
   }
@@ -154,6 +167,7 @@ function HostConsole({ sessionId, secret }: { sessionId: string; secret: string 
             )}
             <HostActivityPicker session={session} secret={secret} />
             <HostLeaderboard ctx={ctx} />
+            <HostTestTools session={session} secret={secret} />
           </>
         )}
 

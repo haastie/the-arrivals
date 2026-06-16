@@ -1,16 +1,12 @@
 import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import {
-  findActivity,
-  findQuestion,
-  isActivityId,
-  isTimelineQuestion,
-  stops,
-  stopsWithQuestions,
-  warmup,
-} from '../content/content'
+import { useContent } from '../content/content'
 import type { Question, Stop } from '../content/types'
 import type { ActiveStatus, AnswerRow, ParticipantRow, PublicSession } from '../lib/db-types'
+import {
+  addTestParticipant,
+  simulateAnswers,
+} from '../lib/test-api'
 import {
   hostAdjustPoints,
   hostClearActive,
@@ -90,6 +86,7 @@ export function HostLobby({
 
 // --- Vraag kiezen en pushen --------------------------------------------
 export function HostQuestionPicker({ session, secret }: { session: PublicSession; secret: string }) {
+  const { stopsWithQuestions, warmup } = useContent()
   const [open, setOpen] = useState<string | null>(stopsWithQuestions[0]?.id ?? null)
 
   async function push(q: Question) {
@@ -137,6 +134,7 @@ export function HostQuestionPicker({ session, secret }: { session: PublicSession
 }
 
 function QuestionPushRow({ q, onPush }: { q: Question; onPush: () => void }) {
+  const { isTimelineQuestion } = useContent()
   const [busy, setBusy] = useState(false)
   return (
     <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2">
@@ -168,6 +166,7 @@ function QuestionPushRow({ q, onPush }: { q: Question; onPush: () => void }) {
 
 // --- Activiteitenkaart pushen ------------------------------------------
 export function HostActivityPicker({ session, secret }: { session: PublicSession; secret: string }) {
+  const { stops } = useContent()
   const acts = stops.flatMap((s) => (s.activities ?? []).map((a) => ({ activity: a, stop: s })))
   if (acts.length === 0) return null
   return (
@@ -197,6 +196,7 @@ export function HostActivityPicker({ session, secret }: { session: PublicSession
 
 // --- Actieve vraag besturen --------------------------------------------
 export function HostActivePanel({ ctx }: { ctx: HostCtx }) {
+  const { isActivityId, findActivity, findQuestion } = useContent()
   const { session, secret, participants, answers } = ctx
   const activeId = session.active_question_id
   const status = session.active_status
@@ -255,6 +255,7 @@ export function HostActivePanel({ ctx }: { ctx: HostCtx }) {
 }
 
 function ActivePanelHeader({ stop, q, status }: { stop?: Stop; q: Question; status: ActiveStatus }) {
+  const { isTimelineQuestion } = useContent()
   const label =
     status === 'open' ? 'Open — inzendingen komen binnen'
       : status === 'locked' ? 'Gesloten'
@@ -320,13 +321,7 @@ function McControl({
           variant="success"
           block
           onClick={() =>
-            hostRevealMc({
-              sessionId: session.id,
-              secret,
-              questionId: q.id,
-              correctIndex: q.correctIndex ?? -1,
-              points: q.points,
-            })
+            hostRevealMc({ sessionId: session.id, secret, questionId: q.id })
           }
         >
           Toon antwoord + score
@@ -370,9 +365,7 @@ function OpenControl({
             </div>
             <div className="flex shrink-0 gap-1.5">
               <button
-                onClick={() =>
-                  hostJudgeOpen({ answerId: a.id, secret, correct: true, points: q.points })
-                }
+                onClick={() => hostJudgeOpen({ answerId: a.id, secret, correct: true })}
                 className={`flex h-9 w-9 items-center justify-center rounded-full text-lg ${
                   a.status === 'correct' ? 'bg-jade text-white' : 'bg-jade/15 text-jade'
                 }`}
@@ -381,9 +374,7 @@ function OpenControl({
                 ✓
               </button>
               <button
-                onClick={() =>
-                  hostJudgeOpen({ answerId: a.id, secret, correct: false, points: q.points })
-                }
+                onClick={() => hostJudgeOpen({ answerId: a.id, secret, correct: false })}
                 className={`flex h-9 w-9 items-center justify-center rounded-full text-lg ${
                   a.status === 'incorrect' ? 'bg-rose-mark text-white' : 'bg-rose-mark/10 text-rose-mark'
                 }`}
@@ -441,6 +432,52 @@ export function HostLeaderboard({ ctx }: { ctx: HostCtx }) {
         ))}
       </ul>
       <p className="mt-2 text-xs text-ink/40">{answers.length} inzendingen totaal</p>
+    </Card>
+  )
+}
+
+// --- Testgereedschap: simuleer deelnemers + antwoorden -----------------
+export function HostTestTools({ session, secret }: { session: PublicSession; secret: string }) {
+  const names = ['Testpiet', 'Testanna', 'Testomar', 'Testlin']
+  const [n, setN] = useState(0)
+  const [err, setErr] = useState<string | null>(null)
+
+  async function add() {
+    setErr(null)
+    try {
+      await addTestParticipant(session.id, secret, `${names[n % names.length]} ${n + 1}`)
+      setN(n + 1)
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Mislukt')
+    }
+  }
+
+  async function simulate() {
+    setErr(null)
+    try {
+      if (session.active_question_id) await simulateAnswers(session.id, secret, session.active_question_id)
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Mislukt')
+    }
+  }
+
+  return (
+    <Card>
+      <h3 className="font-display text-lg font-bold">Testgereedschap</h3>
+      <p className="mt-1 text-sm text-ink/60">Voor solo-testen van de live-flow.</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Button variant="secondary" onClick={add}>
+          + Testdeelnemer
+        </Button>
+        <Button
+          variant="secondary"
+          disabled={session.active_status !== 'open' || !session.active_question_id}
+          onClick={simulate}
+        >
+          Simuleer antwoorden
+        </Button>
+      </div>
+      {err && <p className="mt-2 text-sm text-rose-mark">{err}</p>}
     </Card>
   )
 }

@@ -1,19 +1,11 @@
 import { useState } from 'react'
-import { warmup, stops } from '../content/content'
+import { useContent } from '../content/content'
 import type { Question } from '../content/types'
-import { submitWarmupAnswer } from '../lib/api'
-import type { AnswerRow } from '../lib/db-types'
+import { loadProgress, recordAnswer, type LocalAnswer } from '../lib/warmupLocal'
 import { Button, Card, Notice } from './ui'
-import type { ParticipantIdentity } from '../lib/identity'
 
-export function WarmupView({
-  me,
-  answers,
-}: {
-  me: ParticipantIdentity
-  answers: AnswerRow[]
-}) {
-  const byQuestion = new Map(answers.map((a) => [a.question_id, a]))
+export function WarmupView() {
+  const { warmup, stops } = useContent()
 
   return (
     <div className="flex flex-col gap-5">
@@ -39,65 +31,36 @@ export function WarmupView({
           Raad mee
         </h3>
         {warmup.questions.map((q) => (
-          <WarmupQuestion key={q.id} q={q} me={me} answer={byQuestion.get(q.id)} />
+          <WarmupQuestion key={q.id} q={q} />
         ))}
       </section>
 
-      <ReadAhead />
+      <ReadAhead stops={stops} />
 
-      <Notice tone="warn">
-        Klaar? Blijf in de app. Zodra de gids de wandeling start, springt je scherm vanzelf mee.
-      </Notice>
+      <Notice tone="info">Vrijblijvend oefenen — dit telt niet mee voor het klassement.</Notice>
     </div>
   )
 }
 
-function WarmupQuestion({
-  q,
-  me,
-  answer,
-}: {
-  q: Question
-  me: ParticipantIdentity
-  answer?: AnswerRow
-}) {
-  const [busy, setBusy] = useState(false)
+function WarmupQuestion({ q }: { q: Question }) {
+  const [answer, setAnswer] = useState<LocalAnswer | undefined>(() => loadProgress()[q.id])
   const [text, setText] = useState(answer?.response ?? '')
   const answered = !!answer
 
-  async function pick(index: number) {
-    if (answered || busy) return
-    setBusy(true)
-    try {
-      await submitWarmupAnswer({
-        sessionId: me.sessionId,
-        participantId: me.participantId,
-        questionId: q.id,
-        response: String(index),
-        correct: index === q.correctIndex,
-        points: q.points,
-      })
-    } finally {
-      setBusy(false)
-    }
+  function pick(index: number) {
+    if (answered) return
+    const correct = index === q.correctIndex
+    const a: LocalAnswer = { response: String(index), correct, points: q.points }
+    recordAnswer({ questionId: q.id, ...a })
+    setAnswer(a)
   }
 
-  async function submitOpen() {
-    if (answered || busy || !text.trim()) return
-    setBusy(true)
-    try {
-      // Open warm-up-vraag: automatisch het punt (handoff §5A).
-      await submitWarmupAnswer({
-        sessionId: me.sessionId,
-        participantId: me.participantId,
-        questionId: q.id,
-        response: text.trim(),
-        correct: true,
-        points: q.points,
-      })
-    } finally {
-      setBusy(false)
-    }
+  function submitOpen() {
+    if (answered || !text.trim()) return
+    // Open warm-up-vraag: bij oefenen automatisch "goed" (geen host die beoordeelt).
+    const a: LocalAnswer = { response: text.trim(), correct: true, points: q.points }
+    recordAnswer({ questionId: q.id, ...a })
+    setAnswer(a)
   }
 
   return (
@@ -118,7 +81,7 @@ function WarmupQuestion({
             return (
               <button
                 key={i}
-                disabled={answered || busy}
+                disabled={answered}
                 onClick={() => pick(i)}
                 className={`min-h-12 rounded-2xl px-4 py-3 text-left text-base transition disabled:cursor-default ${cls}`}
               >
@@ -142,7 +105,7 @@ function WarmupQuestion({
             className="rounded-2xl bg-ink/5 px-4 py-3 text-base text-ink outline-none focus:ring-2 focus:ring-amber-glow disabled:opacity-70"
           />
           {!answered && (
-            <Button onClick={submitOpen} disabled={busy || !text.trim()}>
+            <Button onClick={submitOpen} disabled={!text.trim()}>
               Insturen
             </Button>
           )}
@@ -151,11 +114,7 @@ function WarmupQuestion({
 
       {answered && (
         <p className="mt-2 text-sm font-medium text-ink/60">
-          {answer?.status === 'correct'
-            ? `Goed — +${answer.awarded_points}`
-            : answer?.status === 'incorrect'
-              ? 'Niet helemaal — 0'
-              : 'Ingestuurd'}
+          {answer?.correct ? 'Goed geraden ✓' : 'Niet helemaal — maar het is maar oefenen.'}
         </p>
       )}
     </Card>
@@ -163,7 +122,7 @@ function WarmupQuestion({
 }
 
 /** Optioneel: lees de achtergrond per stop alvast (zónder tour-reveals). */
-function ReadAhead() {
+function ReadAhead({ stops }: { stops: ReturnType<typeof useContent>['stops'] }) {
   const [open, setOpen] = useState(false)
   const readable = stops.filter((s) => s.background)
 
