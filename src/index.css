@@ -1,0 +1,68 @@
+@import 'tailwindcss';
+
+/*
+  The Arrivals — design tokens.
+  Toon: documentaire-meets-buurtwandeling. Warm, hoog contrast (buiten leesbaar).
+*/
+@theme {
+  --color-ink: #1c1917; /* stone-900 — hoofdtekst / donkere achtergrond */
+  --color-ink-soft: #292524; /* stone-800 */
+  --color-paper: #faf6ef; /* warm wit */
+  --color-paper-dim: #efe7d8;
+  --color-amber-glow: #f59e0b; /* accent: era/laag, actieve vraag */
+  --color-clay: #c2410c; /* secundair accent (orange-700) */
+  --color-jade: #047857; /* correct / groen */
+  --color-rose-mark: #be123c; /* incorrect / rood */
+  --color-sky-live: #0369a1; /* live-modus accent */
+
+  --font-display: 'Georgia', 'Times New Roman', serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* respecteer notch / home indicator */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Grote tikdoelen overal */
+button {
+  touch-action: manipulation;
+}
+
+/* Documentaire-kopjes */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Subtiele binnenkomst-animatie voor schermwissels */
+@keyframes ta-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.ta-rise {
+  animation: ta-rise 0.28s ease-out both;
+}
