@@ -103,7 +103,9 @@ begin
     exit when not exists (select 1 from sessions s where s.join_code = v_code);
   end loop;
 
-  v_secret := encode(gen_random_bytes(16), 'hex');
+  -- 64 hex chars zonder pgcrypto (gen_random_uuid zit in core, gen_random_bytes niet
+  -- in het search_path van deze functie → vandaar deze variant).
+  v_secret := replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', '');
 
   insert into sessions (join_code, host_secret)
   values (v_code, v_secret)
