@@ -4,8 +4,20 @@ import type { Question } from '../content/types'
 import { loadProgress, recordAnswer, type LocalAnswer } from '../lib/warmupLocal'
 import { Button, Card, Notice } from './ui'
 
+/** Kies n willekeurige items (zonder de bron te muteren). */
+function pickRandom<T>(items: T[], n: number): T[] {
+  const copy = [...items]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy.slice(0, n)
+}
+
 export function WarmupView() {
-  const { warmup, stops } = useContent()
+  const { warmup } = useContent()
+  // Telkens 3 willekeurige warm-up-vragen (stabiel binnen dit bezoek).
+  const [questions] = useState(() => pickRandom(warmup.questions, 3))
 
   return (
     <div className="flex flex-col gap-5">
@@ -30,12 +42,10 @@ export function WarmupView() {
         <h3 className="px-1 text-sm font-semibold tracking-wide text-paper/60 uppercase">
           Raad mee
         </h3>
-        {warmup.questions.map((q) => (
+        {questions.map((q) => (
           <WarmupQuestion key={q.id} q={q} />
         ))}
       </section>
-
-      <ReadAhead stops={stops} />
 
       <Notice tone="info">Vrijblijvend oefenen — dit telt niet mee voor het klassement.</Notice>
     </div>
@@ -118,39 +128,5 @@ function WarmupQuestion({ q }: { q: Question }) {
         </p>
       )}
     </Card>
-  )
-}
-
-/** Optioneel: lees de achtergrond per stop alvast (zónder tour-reveals). */
-function ReadAhead({ stops }: { stops: ReturnType<typeof useContent>['stops'] }) {
-  const [open, setOpen] = useState(false)
-  const readable = stops.filter((s) => s.background)
-
-  return (
-    <section className="flex flex-col gap-2">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center justify-between rounded-2xl bg-paper/10 px-4 py-3 text-left text-sm font-semibold text-paper/80"
-      >
-        <span>Lees alvast — achtergrond per stop</span>
-        <span className="text-paper/50">{open ? '▲' : '▼'}</span>
-      </button>
-      {open && (
-        <div className="flex flex-col gap-3">
-          <p className="px-1 text-xs text-paper/40">
-            Dit is de context, niet de clou — de onthullingen bewaren we voor onderweg.
-          </p>
-          {readable.map((s) => (
-            <Card key={s.id}>
-              <div className="text-xs font-medium tracking-wider text-clay uppercase">
-                Stop {s.number} · {s.era}
-              </div>
-              <h4 className="font-display text-lg font-bold text-ink">{s.name}</h4>
-              <p className="mt-1.5 text-sm leading-relaxed text-ink/75">{s.background}</p>
-            </Card>
-          ))}
-        </div>
-      )}
-    </section>
   )
 }

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useContentState } from '../content/content'
 import { Button, MultilingualGreeting, Screen } from '../components/ui'
+import { MusicButton } from '../components/MusicButton'
 
 export default function Landing() {
   const { content } = useContentState()
@@ -36,6 +37,9 @@ export default function Landing() {
         {meta?.date && (
           <p className="text-center text-xs text-paper/40">Jackson Heights, Queens · {meta.date}</p>
         )}
+        <div className="mt-1 flex justify-center">
+          <MusicButton />
+        </div>
         <div className="mt-2 text-center">
           <Link to="/master" className="text-xs text-paper/35 underline underline-offset-4">
             Host
