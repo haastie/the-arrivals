@@ -1,6 +1,6 @@
 import type { Stop } from '../content/types'
 
-/** Stopnummer, naam, era/laag — zoals voorgeschreven in de handoff (§7). */
+/** Stopnummer, naam, era/laag - zoals voorgeschreven in de handoff (§7). */
 export function StopHeader({ stop }: { stop: Stop }) {
   return (
     <div className="mb-3">

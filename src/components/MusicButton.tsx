@@ -1,22 +1,12 @@
-import { useRef, useState } from 'react'
+import { useAudio } from './AudioProvider'
 
 /**
- * Sfeer-knop: speelt het tour-nummer (Veintiuno — Momo) zodat deelnemers
- * alvast in de stemming komen. Loopt, met een simpele play/pauze-toggle.
+ * Sfeer-knop: speelt het tour-nummer (Veintiuno - Momo) zodat deelnemers alvast
+ * in de stemming komen. De audio leeft in de AudioProvider (boven de router) en
+ * speelt door bij paginawissels.
  */
 export function MusicButton({ className = '' }: { className?: string }) {
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const [playing, setPlaying] = useState(false)
-
-  function toggle() {
-    const el = audioRef.current
-    if (!el) return
-    if (playing) {
-      el.pause()
-    } else {
-      void el.play()
-    }
-  }
+  const { playing, toggle } = useAudio()
 
   return (
     <button
@@ -27,7 +17,7 @@ export function MusicButton({ className = '' }: { className?: string }) {
       className={`inline-flex items-center gap-2 rounded-full bg-paper/10 px-4 py-2 text-sm font-medium text-paper/90 transition hover:bg-paper/15 ${className}`}
     >
       <span className="text-base">{playing ? '⏸' : '▶'}</span>
-      <span>{playing ? 'Muziek aan — Momo' : 'Zet de sfeer aan'}</span>
+      <span>{playing ? 'Muziek aan - Momo' : 'Zet de sfeer aan'}</span>
       {playing && (
         <span className="flex items-end gap-0.5" aria-hidden>
           <span className="h-3 w-0.5 animate-pulse rounded bg-amber-glow" />
@@ -35,14 +25,6 @@ export function MusicButton({ className = '' }: { className?: string }) {
           <span className="h-3.5 w-0.5 animate-pulse rounded bg-amber-glow [animation-delay:240ms]" />
         </span>
       )}
-      <audio
-        ref={audioRef}
-        src="/music/veintiuno-momo.mp3"
-        loop
-        preload="none"
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
-      />
     </button>
   )
 }

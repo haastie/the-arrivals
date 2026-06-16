@@ -37,7 +37,7 @@ export function FinishView({
             {winners.map((w) => w.name).join(' & ')}
           </p>
           <p className="text-sm text-ink/60">
-            {topScore} punten op de zes Tijdlijn-vragen — de kers van de sundae 🍒
+            {topScore} punten op de zes Tijdlijn-vragen - de kers van de sundae 🍒
           </p>
         </Card>
       )}
@@ -62,7 +62,7 @@ export function FinishView({
           <p className="font-display mt-1 text-lg leading-snug font-bold text-ink">
             {slotQuestion.prompt}
           </p>
-          <p className="mt-2 text-xs text-ink/40">Niet gescoord — laat de groep het laatste woord.</p>
+          <p className="mt-2 text-xs text-ink/40">Niet gescoord - laat de groep het laatste woord.</p>
         </Card>
       )}
     </div>

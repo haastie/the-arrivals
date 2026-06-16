@@ -73,7 +73,7 @@ export function EntityForm({
               onChange={(e) => set(f.key, e.target.value)}
               className="rounded-xl bg-ink/5 px-3 py-2 text-sm text-ink outline-none focus:ring-2 focus:ring-amber-glow"
             >
-              <option value="">— kies —</option>
+              <option value="">- kies -</option>
               {f.options?.map((o) => (
                 <option key={o.value} value={o.value}>
                   {o.label}

@@ -187,7 +187,7 @@ function ParticipantResult({
   if (status === 'locked') {
     return (
       <Notice tone="warn">
-        {myAnswer ? 'Gesloten — wacht op de gids.' : 'Je hebt niet geantwoord. Gesloten.'}
+        {myAnswer ? 'Gesloten - wacht op de gids.' : 'Je hebt niet geantwoord. Gesloten.'}
       </Notice>
     )
   }
@@ -200,7 +200,7 @@ function ParticipantResult({
           good ? 'bg-jade text-white' : 'bg-rose-mark text-white'
         }`}
       >
-        {good ? `Goed! +${myAnswer.awarded_points}` : 'Helaas — 0 punten'}
+        {good ? `Goed! +${myAnswer.awarded_points}` : 'Helaas - 0 punten'}
         {question.type === 'open' && !good && myAnswer.status === 'pending' && (
           <span className="block text-sm font-normal">Nog niet beoordeeld…</span>
         )}

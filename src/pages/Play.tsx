@@ -145,7 +145,7 @@ export default function Play() {
 function LobbyStrip({ participants }: { participants: number }) {
   return (
     <Notice tone="info">
-      Je bent binnen — <strong>{participants}</strong>{' '}
+      Je bent binnen - <strong>{participants}</strong>{' '}
       {participants === 1 ? 'deelnemer' : 'deelnemers'} in de lobby. Doe alvast de warm-up.
     </Notice>
   )

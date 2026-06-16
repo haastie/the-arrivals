@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import { ContentProvider } from './content/content.ts'
+import { AudioProvider } from './components/AudioProvider.tsx'
 import Landing from './pages/Landing.tsx'
 import Join from './pages/Join.tsx'
 import Play from './pages/Play.tsx'
@@ -22,8 +23,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ContentProvider>
-      <RouterProvider router={router} />
-    </ContentProvider>
+    <AudioProvider>
+      <ContentProvider>
+        <RouterProvider router={router} />
+      </ContentProvider>
+    </AudioProvider>
   </StrictMode>,
 )

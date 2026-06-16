@@ -1,4 +1,4 @@
-// Types for content_seed.json — de bron van waarheid voor alle tour-inhoud.
+// Types for content_seed.json - de bron van waarheid voor alle tour-inhoud.
 
 export type QuestionType = 'mc' | 'open'
 
@@ -40,9 +40,9 @@ export interface Stop {
   layer: string
   food?: string
   intro: string
-  /** Tour-onthulling — NIET tonen in de warm-up */
+  /** Tour-onthulling - NIET tonen in de warm-up */
   reveal: string
-  /** Achtergrondtekst — mag wél vooraf gelezen worden */
+  /** Achtergrondtekst - mag wél vooraf gelezen worden */
   background: string
   activities?: Activity[]
   questions: Question[]
