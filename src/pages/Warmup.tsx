@@ -4,6 +4,7 @@ import { supabaseConfigured } from '../lib/supabase'
 import { Button, MultilingualGreeting, Notice, Screen } from '../components/ui'
 import { SetupNeeded } from '../components/SetupNeeded'
 import { WarmupView } from '../components/WarmupView'
+import { MusicButton } from '../components/MusicButton'
 
 export default function Warmup() {
   const { content, loading, error } = useContentState()
@@ -33,6 +34,9 @@ export default function Warmup() {
         <p className="text-sm text-paper/60">
           Vrijblijvend; dit telt niet mee voor het klassement.
         </p>
+        <div className="mt-3">
+          <MusicButton />
+        </div>
       </header>
 
       <WarmupView />
