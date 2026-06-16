@@ -1,4 +1,3 @@
-import { timelineQuestionIds } from '../content/content'
 import type { AnswerRow, ParticipantRow } from './db-types'
 
 export interface RankedParticipant extends ParticipantRow {
@@ -13,6 +12,7 @@ export interface RankedParticipant extends ParticipantRow {
 export function rankParticipants(
   participants: ParticipantRow[],
   answers: AnswerRow[],
+  timelineQuestionIds: string[],
 ): RankedParticipant[] {
   const timelinePoints = new Map<string, number>()
   for (const a of answers) {
@@ -45,8 +45,9 @@ export function rankParticipants(
 export function timelineWinners(
   participants: ParticipantRow[],
   answers: AnswerRow[],
+  timelineQuestionIds: string[],
 ): { winners: RankedParticipant[]; topScore: number } {
-  const ranked = rankParticipants(participants, answers)
+  const ranked = rankParticipants(participants, answers, timelineQuestionIds)
   const top = Math.max(0, ...ranked.map((p) => p.timelineScore))
   return {
     winners: top > 0 ? ranked.filter((p) => p.timelineScore === top) : [],

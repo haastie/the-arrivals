@@ -1,11 +1,8 @@
-import { meta, stops } from '../content/content'
+import { useContent } from '../content/content'
 import { timelineWinners } from '../lib/score'
 import type { AnswerRow, ParticipantRow } from '../lib/db-types'
 import { Card } from './ui'
 import { Leaderboard } from './Leaderboard'
-
-const slotStop = stops.find((s) => s.id === 's9')
-const slotQuestion = slotStop?.questions.find((q) => q.discussion)
 
 export function FinishView({
   participants,
@@ -16,7 +13,10 @@ export function FinishView({
   answers: AnswerRow[]
   highlightId?: string
 }) {
-  const { winners, topScore } = timelineWinners(participants, answers)
+  const { meta, stops, timelineQuestionIds } = useContent()
+  const slotStop = stops.find((s) => s.id === 's9')
+  const slotQuestion = slotStop?.questions.find((q) => q.discussion)
+  const { winners, topScore } = timelineWinners(participants, answers, timelineQuestionIds)
 
   return (
     <div className="ta-rise flex flex-col gap-5">

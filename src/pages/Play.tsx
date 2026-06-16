@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { loadParticipant, type ParticipantIdentity } from '../lib/identity'
 import { supabaseConfigured } from '../lib/supabase'
 import { useGameState } from '../hooks/useGameState'
-import { findActivity, findQuestion, isActivityId, meta } from '../content/content'
+import { useContentState } from '../content/content'
 import { ConnectionBadge, MultilingualGreeting, Notice, Screen } from '../components/ui'
 import { SetupNeeded } from '../components/SetupNeeded'
 import { WarmupView } from '../components/WarmupView'
@@ -14,6 +14,7 @@ import { FinishView } from '../components/FinishView'
 export default function Play() {
   const navigate = useNavigate()
   const [me] = useState<ParticipantIdentity | null>(() => loadParticipant())
+  const { content, loading: contentLoading, error: contentError } = useContentState()
   const { session, participants, answers, loading, connection, error } = useGameState(
     me?.sessionId,
   )
@@ -24,6 +25,21 @@ export default function Play() {
 
   if (!supabaseConfigured) return <SetupNeeded />
   if (!me) return null
+
+  if (contentLoading && !content) {
+    return (
+      <Screen className="justify-center">
+        <p className="text-center text-paper/50">Content laden…</p>
+      </Screen>
+    )
+  }
+  if (!content) {
+    return (
+      <Screen className="justify-center">
+        <Notice tone="error">{contentError ?? 'Content kon niet laden.'}</Notice>
+      </Screen>
+    )
+  }
 
   if (loading && !session) {
     return (
@@ -52,6 +68,7 @@ export default function Play() {
     )
   }
 
+  const { findActivity, findQuestion, isActivityId, meta } = content
   const myAnswers = answers.filter((a) => a.participant_id === me.participantId)
   const activeId = session.active_question_id
   const activeAnswer = myAnswers.find((a) => a.question_id === activeId)
@@ -75,7 +92,7 @@ export default function Play() {
         {session.phase === 'warmup' && (
           <div className="flex flex-col gap-5">
             <LobbyStrip participants={participants.length} />
-            <WarmupView me={me} answers={myAnswers} />
+            <WarmupView />
           </div>
         )}
 

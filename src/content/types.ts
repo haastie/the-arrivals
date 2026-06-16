@@ -75,3 +75,67 @@ export interface Content {
   stops: Stop[]
   timelineQuestionIds: string[]
 }
+
+// --- DB-rijen (zie supabase/migrations/0002_cms.sql) ---
+export interface SettingsRow {
+  title: string
+  subtitle: string | null
+  language: string | null
+  date: string | null
+  central_question: string | null
+  opening_line: string | null
+  closing_line: string | null
+  warmup_intro: string | null
+  mc_points: number
+  open_points: number
+  timeline_note: string | null
+}
+export interface StopRow {
+  id: string
+  number: number
+  name: string
+  optional: boolean
+  location: string | null
+  era: string | null
+  layer: string | null
+  food: string | null
+  intro: string | null
+  reveal: string | null
+  background: string | null
+  sort_order: number
+}
+export interface CardRow {
+  id: string
+  title: string
+  body: string
+  sort_order: number
+}
+export interface QuestionRow {
+  id: string
+  group_id: string
+  type: 'mc' | 'open'
+  prompt: string
+  options: string[] | null
+  correct_index: number | null
+  model_answer: string | null
+  points: number
+  is_timeline: boolean
+  discussion: boolean
+  sort_order: number
+  active: boolean
+}
+export interface ActivityRow {
+  id: string
+  stop_id: string
+  title: string
+  body: string
+  sort_order: number
+}
+
+export interface ContentRows {
+  settings: SettingsRow
+  stops: StopRow[]
+  cards: CardRow[]
+  questions: QuestionRow[]
+  activities: ActivityRow[]
+}
