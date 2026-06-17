@@ -122,9 +122,14 @@ function WarmupQuestion({ q }: { q: Question }) {
       )}
 
       {answered && (
-        <p className="mt-2 text-sm font-medium text-ink/60">
-          {answer?.correct ? 'Goed geraden ✓' : 'Niet helemaal - maar het is maar oefenen.'}
-        </p>
+        <div className="mt-2">
+          <p className="text-sm font-medium text-ink/60">
+            {answer?.correct ? 'Goed geraden ✓' : 'Niet helemaal - maar het is maar oefenen.'}
+          </p>
+          {q.type === 'mc' && q.modelAnswer && (
+            <p className="mt-1 text-sm leading-relaxed text-ink/70">{q.modelAnswer}</p>
+          )}
+        </div>
       )}
     </Card>
   )
