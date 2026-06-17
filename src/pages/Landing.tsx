@@ -40,11 +40,6 @@ export default function Landing() {
         <div className="mt-1 flex justify-center">
           <MusicButton />
         </div>
-        <div className="mt-2 text-center">
-          <Link to="/master" className="text-xs text-paper/35 underline underline-offset-4">
-            Host
-          </Link>
-        </div>
       </div>
     </Screen>
   )
