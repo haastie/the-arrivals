@@ -18,9 +18,21 @@ export default function Landing() {
           {meta?.subtitle ?? 'Een quiz-wandeling door honderd jaar migratie'}
         </p>
 
+        {meta?.redThread && (
+          <p className="mt-6 font-mono text-[11px] tracking-[0.16em] text-sky-live/90 uppercase">
+            {meta.redThread}
+          </p>
+        )}
+
         {meta?.openingLine && (
-          <p className="font-display mt-8 border-l-2 border-amber-glow/70 pl-4 text-lg leading-relaxed text-paper/85 italic">
+          <p className="font-display mt-4 border-l-2 border-amber-glow/70 pl-4 text-lg leading-relaxed text-paper/85 italic">
             {meta.openingLine}
+          </p>
+        )}
+
+        {meta?.landAcknowledgement && (
+          <p className="mt-4 pl-4 text-xs leading-relaxed text-paper/45">
+            {meta.landAcknowledgement}
           </p>
         )}
       </div>

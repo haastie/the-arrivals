@@ -194,6 +194,34 @@ export function HostActivityPicker({ session, secret }: { session: PublicSession
   )
 }
 
+// --- Host-briefing (op te lezen bij de start) --------------------------
+export function HostBriefing() {
+  const { meta } = useContent()
+  if (!meta.openingLine && !meta.redThread) return null
+  return (
+    <Card>
+      <div className="text-xs font-semibold tracking-wider text-clay uppercase">Briefing · lees voor</div>
+      {meta.redThread && (
+        <p className="font-display mt-2 text-lg leading-snug font-bold text-ink">{meta.redThread}</p>
+      )}
+      {meta.openingLine && (
+        <p className="mt-2 text-sm leading-relaxed text-ink/75">{meta.openingLine}</p>
+      )}
+      {meta.landAcknowledgement && (
+        <p className="mt-2 border-l-2 border-clay/40 pl-3 text-sm leading-relaxed text-ink/60 italic">
+          {meta.landAcknowledgement}
+        </p>
+      )}
+      {meta.mechanism && (
+        <p className="mt-3 text-xs text-ink/45">
+          <span className="font-semibold text-ink/60">De zeef: </span>
+          {meta.mechanism}
+        </p>
+      )}
+    </Card>
+  )
+}
+
 // --- Actieve vraag besturen --------------------------------------------
 export function HostActivePanel({ ctx }: { ctx: HostCtx }) {
   const { isActivityId, findActivity, findQuestion } = useContent()
@@ -347,7 +375,14 @@ function OpenControl({
 
   return (
     <div className="mt-3 flex flex-col gap-2">
-      {q.modelAnswer && (
+      {q.discussion && (
+        <div className="rounded-2xl bg-sky-live/15 px-3 py-2 text-xs text-ink/70">
+          <span className="font-semibold text-sky-live">Discussievraag · </span>
+          niet scoren - lees voor en laat de groep reageren (geen ✓/✗ nodig).
+        </div>
+      )}
+
+      {q.modelAnswer && !q.discussion && (
         <div className="rounded-2xl bg-amber-glow/15 px-3 py-2 text-xs text-ink/70">
           <span className="font-semibold text-clay">Rubric · </span>
           {q.modelAnswer}

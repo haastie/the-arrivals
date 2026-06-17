@@ -5,6 +5,7 @@ import type { ContentRows } from './types'
 const rows: ContentRows = {
   settings: {
     title: 'T', subtitle: 'S', language: 'nl', date: '2026-06-21', central_question: 'C',
+    red_thread: 'RT', mechanism: 'MECH', land_acknowledgement: 'LA',
     opening_line: 'O', closing_line: 'CL', warmup_intro: 'WI', mc_points: 1, open_points: 2, timeline_note: 'N',
   },
   stops: [
@@ -28,6 +29,11 @@ describe('mapContent', () => {
   it('warm-up vragen onder warmup', () => {
     expect(c.warmup.questions.map((q) => q.id)).toEqual(['wu-q1'])
     expect(c.warmup.intro).toBe('WI')
+  })
+  it('v2 meta-velden gemapt', () => {
+    expect(c.meta.redThread).toBe('RT')
+    expect(c.meta.mechanism).toBe('MECH')
+    expect(c.meta.landAcknowledgement).toBe('LA')
   })
   it('inactieve vragen worden weggelaten', () => {
     expect(c.stops[0].questions.map((q) => q.id)).toEqual(['s1-q1'])

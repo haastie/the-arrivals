@@ -25,7 +25,10 @@ export function mapContent(rows: ContentRows): MappedContent {
     language: s.language ?? 'nl',
     date: s.date ?? '',
     centralQuestion: s.central_question ?? '',
+    redThread: s.red_thread ?? s.central_question ?? '',
+    mechanism: s.mechanism ?? '',
     openingLine: s.opening_line ?? '',
+    landAcknowledgement: s.land_acknowledgement ?? '',
     closingLine: s.closing_line ?? '',
     scoring: { mcPoints: s.mc_points, openPoints: s.open_points, timelineNote: s.timeline_note ?? '' },
   }
