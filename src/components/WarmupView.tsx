@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { useContent } from '../content/content'
 import type { Question } from '../content/types'
 import { recordAnswer, type LocalAnswer } from '../lib/warmupLocal'
@@ -51,8 +51,10 @@ export function WarmupView() {
           <h3 className="text-sm font-semibold tracking-wide text-paper/60 uppercase">Raad mee</h3>
           <RerollButton onClick={reroll} />
         </div>
-        {questions.map((q) => (
-          <WarmupQuestion key={`${round}-${q.id}`} q={q} />
+        {questions.map((q, i) => (
+          <div key={`${round}-${q.id}`} className="ta-stagger" style={{ '--i': i } as CSSProperties}>
+            <WarmupQuestion q={q} />
+          </div>
         ))}
         <div className="mt-1 flex justify-center">
           <RerollButton onClick={reroll} />
