@@ -1,8 +1,20 @@
 import { useState } from 'react'
 import { useContent } from '../content/content'
 import type { Question } from '../content/types'
-import { loadProgress, recordAnswer, type LocalAnswer } from '../lib/warmupLocal'
+import { recordAnswer, type LocalAnswer } from '../lib/warmupLocal'
 import { Button, Card, Notice } from './ui'
+
+function RerollButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="inline-flex items-center gap-1.5 rounded-full bg-paper/10 px-3 py-1.5 text-xs font-medium text-paper/80 transition hover:bg-paper/15"
+    >
+      <span aria-hidden>↻</span> Nieuwe vragen
+    </button>
+  )
+}
 
 /** Kies n willekeurige items (zonder de bron te muteren). */
 function pickRandom<T>(items: T[], n: number): T[] {
@@ -17,10 +29,14 @@ function pickRandom<T>(items: T[], n: number): T[] {
 export function WarmupView() {
   const { warmup } = useContent()
   // Telkens 3 willekeurige warm-up-vragen; via de knop laad je een nieuwe set.
+  // `round` verhoogt bij elke nieuwe set en dwingt een verse (onbeantwoorde)
+  // weergave af, ook als dezelfde vraag opnieuw wordt getrokken.
+  const [round, setRound] = useState(0)
   const [questions, setQuestions] = useState(() => pickRandom(warmup.questions, 3))
 
   function reroll() {
     setQuestions(pickRandom(warmup.questions, 3))
+    setRound((r) => r + 1)
   }
 
   return (
@@ -33,17 +49,14 @@ export function WarmupView() {
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between px-1">
           <h3 className="text-sm font-semibold tracking-wide text-paper/60 uppercase">Raad mee</h3>
-          <button
-            type="button"
-            onClick={reroll}
-            className="inline-flex items-center gap-1.5 rounded-full bg-paper/10 px-3 py-1.5 text-xs font-medium text-paper/80 transition hover:bg-paper/15"
-          >
-            <span aria-hidden>↻</span> Nieuwe vragen
-          </button>
+          <RerollButton onClick={reroll} />
         </div>
         {questions.map((q) => (
-          <WarmupQuestion key={q.id} q={q} />
+          <WarmupQuestion key={`${round}-${q.id}`} q={q} />
         ))}
+        <div className="mt-1 flex justify-center">
+          <RerollButton onClick={reroll} />
+        </div>
       </section>
 
       <Notice tone="info">Vrijblijvend oefenen - dit telt niet mee voor het klassement.</Notice>
@@ -52,8 +65,9 @@ export function WarmupView() {
 }
 
 function WarmupQuestion({ q }: { q: Question }) {
-  const [answer, setAnswer] = useState<LocalAnswer | undefined>(() => loadProgress()[q.id])
-  const [text, setText] = useState(answer?.response ?? '')
+  // Altijd vers beginnen: een (opnieuw) getoonde vraag is gewoon weer te beantwoorden.
+  const [answer, setAnswer] = useState<LocalAnswer | undefined>(undefined)
+  const [text, setText] = useState('')
   const answered = !!answer
 
   function pick(index: number) {
@@ -122,9 +136,14 @@ function WarmupQuestion({ q }: { q: Question }) {
       )}
 
       {answered && (
-        <p className="mt-2 text-sm font-medium text-ink/60">
-          {answer?.correct ? 'Goed geraden ✓' : 'Niet helemaal - maar het is maar oefenen.'}
-        </p>
+        <div className="mt-2">
+          <p className="text-sm font-medium text-ink/60">
+            {answer?.correct ? 'Goed geraden ✓' : 'Niet helemaal - maar het is maar oefenen.'}
+          </p>
+          {q.type === 'mc' && q.modelAnswer && (
+            <p className="mt-1 text-sm leading-relaxed text-ink/70">{q.modelAnswer}</p>
+          )}
+        </div>
       )}
     </Card>
   )
