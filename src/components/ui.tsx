@@ -1,7 +1,9 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
 // --- Knop ---------------------------------------------------------------
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'success'
+// secondary/ghost zijn voor de DONKERE achtergrond (Screen); neutral/outline
+// zijn voor gebruik BINNEN witte kaarten (Card), waar lichte tekst wegvalt.
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'success' | 'neutral' | 'outline'
 
 const variantClasses: Record<Variant, string> = {
   primary:
@@ -11,6 +13,9 @@ const variantClasses: Record<Variant, string> = {
   ghost: 'bg-transparent text-paper/80 hover:text-paper hover:bg-paper/5',
   danger: 'bg-rose-mark text-white shadow-[0_10px_30px_-12px_rgba(190,18,60,0.6)] hover:brightness-110',
   success: 'bg-jade text-white shadow-[0_10px_30px_-12px_rgba(4,120,87,0.6)] hover:brightness-110',
+  // Voor binnen witte kaarten:
+  neutral: 'bg-ink text-paper hover:bg-ink-soft',
+  outline: 'border border-ink/20 bg-transparent text-ink hover:bg-ink/5',
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

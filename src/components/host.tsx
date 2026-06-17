@@ -39,7 +39,7 @@ export function HostJoinPanel({ session }: { session: PublicSession }) {
             {session.join_code}
           </div>
         </div>
-        <Button variant="secondary" onClick={() => setShow((v) => !v)}>
+        <Button variant="outline" onClick={() => setShow((v) => !v)}>
           {show ? 'Verberg QR' : 'Toon QR'}
         </Button>
       </div>
@@ -181,7 +181,7 @@ export function HostActivityPicker({ session, secret }: { session: PublicSession
               <p className="truncate text-xs text-ink/40">Stop {stop.number} · {stop.name}</p>
             </div>
             <Button
-              variant="secondary"
+              variant="outline"
               onClick={() => hostPushActivity(session.id, secret, activity.id)}
               className="shrink-0 px-3 py-2 text-sm"
             >
@@ -239,7 +239,7 @@ export function HostActivePanel({ ctx }: { ctx: HostCtx }) {
         <div className="text-xs font-semibold tracking-wider text-clay uppercase">Actieve activiteit</div>
         <h3 className="font-display mt-1 text-xl font-bold text-ink">{found?.activity.title}</h3>
         <p className="mt-1 text-sm text-ink/70">{found?.activity.body}</p>
-        <Button block variant="secondary" className="mt-4" onClick={() => hostClearActive(session.id, secret)}>
+        <Button block variant="neutral" className="mt-4" onClick={() => hostClearActive(session.id, secret)}>
           Sluiten / volgende
         </Button>
       </Card>
@@ -265,17 +265,29 @@ export function HostActivePanel({ ctx }: { ctx: HostCtx }) {
 
       <div className="mt-4 flex gap-2">
         {status === 'open' && (
-          <Button variant="secondary" block onClick={() => hostSetStatus(session.id, secret, 'locked')}>
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={() => hostSetStatus(session.id, secret, 'locked')}
+          >
             Sluiten
           </Button>
         )}
         {status === 'locked' && (
-          <Button variant="ghost" onClick={() => hostSetStatus(session.id, secret, 'open')} className="px-3">
+          <Button
+            variant="outline"
+            className="px-4"
+            onClick={() => hostSetStatus(session.id, secret, 'open')}
+          >
             Heropenen
           </Button>
         )}
-        <Button variant="ghost" onClick={() => hostClearActive(session.id, secret)} className="px-3">
-          Volgende →
+        <Button
+          variant="neutral"
+          className="flex-1"
+          onClick={() => hostClearActive(session.id, secret)}
+        >
+          Volgende vraag →
         </Button>
       </div>
     </Card>
@@ -501,11 +513,11 @@ export function HostTestTools({ session, secret }: { session: PublicSession; sec
       <h3 className="font-display text-lg font-bold">Testgereedschap</h3>
       <p className="mt-1 text-sm text-ink/60">Voor solo-testen van de live-flow.</p>
       <div className="mt-3 flex flex-wrap gap-2">
-        <Button variant="secondary" onClick={add}>
+        <Button variant="outline" onClick={add}>
           + Testdeelnemer
         </Button>
         <Button
-          variant="secondary"
+          variant="outline"
           disabled={session.active_status !== 'open' || !session.active_question_id}
           onClick={simulate}
         >

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useContentState } from '../content/content'
 import { Button, MultilingualGreeting, Screen, Tag } from '../components/ui'
 import { MusicButton } from '../components/MusicButton'
@@ -7,10 +7,13 @@ import { tourStartMs } from '../lib/countdown'
 
 export default function Landing() {
   const { content } = useContentState()
+  const [params] = useSearchParams()
   const meta = content?.meta
   const target = tourStartMs(meta?.date ?? '2026-06-21')
   const cd = useCountdown(target)
-  const locked = target !== null && !cd.done
+  // ?preview ontgrendelt 'Doe mee' om de tour vóór de startdatum te testen.
+  const previewUnlock = params.has('preview')
+  const locked = target !== null && !cd.done && !previewUnlock
 
   return (
     <Screen className="justify-between">
@@ -55,9 +58,16 @@ export default function Landing() {
             </p>
           </div>
         ) : (
-          <Link to="/join">
-            <Button block>Doe mee</Button>
-          </Link>
+          <div>
+            <Link to="/join">
+              <Button block>Doe mee</Button>
+            </Link>
+            {previewUnlock && target !== null && !cd.done && (
+              <p className="mt-1.5 text-center font-mono text-[11px] tracking-[0.14em] text-sky-live/80 uppercase">
+                Testmodus · knop ontgrendeld
+              </p>
+            )}
+          </div>
         )}
         <Link to="/warmup">
           <Button variant="secondary" block>
