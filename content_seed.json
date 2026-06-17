@@ -49,7 +49,7 @@
       "background": "Geïnspireerd op Ebenezer Howards Garden City en Berlijnse tuinappartementen. Restrictieve aktes werden pas in 1948 (Shelley v. Kraemer) onafdwingbaar; informele uitsluiting van zwarte bewoners liep door tot na 1968. De Olmsted-tuin is een onbevestigd verhaal.",
       "questions": [
         { "id": "s1-q1", "type": "open", "prompt": "De buurt heet 'Heights'. Hoe hoog ligt het — en waarom heet het dan zo?", "modelAnswer": "Het is plat ('Trains Meadow'); 'Heights' is marketing (prestige, echo van Brooklyn Heights).", "points": 2, "isTimeline": true },
-        { "id": "s1-q2", "type": "mc", "prompt": "Voor wie werd deze buurt gebouwd — en wie werd geweerd?", "options": ["Voor White Anglo-Saxon Protestants; geweerd: Joden, zwarte Amerikanen, en in de praktijk katholieken/Italianen/Grieken", "Voor iedereen — er was geen selectie", "Alleen voor Ieren en Italianen", "Alleen voor niet-Engelssprekenden"], "correctIndex": 0, "points": 2, "isTimeline": false }
+        { "id": "s1-q2", "type": "mc", "prompt": "Voor wie werd deze buurt gebouwd — en wie werd geweerd?", "options": ["Voor welgestelde katholieke gezinnen; protestanten en Joden geweerd","Voor iedereen met voldoende geld, ongeacht geloof of afkomst","Voor witte protestanten; Joden, zwarte Amerikanen en katholieken geweerd","Voor Ierse en Italiaanse fabrieksarbeiders; niet-Engelstaligen geweerd"], "correctIndex": 2, "points": 2, "isTimeline": false }
       ]
     },
     {
@@ -60,7 +60,7 @@
       "background": "De Depressie maakte exclusiviteit onbetaalbaar; de 'zeef' brokkelde af. Butts bepaalde de letterpunten via frequentie-analyse van NYT-voorpagina's (vandaar de dure Q en Z). Straatbordje met Scrabble-punten op 35th Ave & 81st St.",
       "questions": [
         { "id": "s2-q1", "type": "open", "prompt": "Welk wereldberoemd bordspel werd hier bedacht — door wat voor iemand?", "modelAnswer": "Scrabble; door een werkloze architect (Alfred Butts). Beide nodig.", "points": 2, "isTimeline": true },
-        { "id": "s2-q2", "type": "mc", "prompt": "Welke twee groepen waren de eersten die de exclusieve buurt binnendrongen in de jaren '40?", "options": ["Joodse New Yorkers en homoseksuele mannen", "Colombianen en Mexicanen", "Tibetanen en Nepalezen", "Ieren en Italianen"], "correctIndex": 0, "points": 1, "isTimeline": false }
+        { "id": "s2-q2", "type": "mc", "prompt": "Welke twee groepen waren de eersten die de exclusieve buurt binnendrongen in de jaren '40?", "options": ["Colombiaanse en Mexicaanse nieuwkomers","Joodse New Yorkers en homoseksuele mannen","Tibetaanse en Nepalese families uit de Himalaya","Ierse en Italiaanse fabrieksarbeiders"], "correctIndex": 1, "points": 1, "isTimeline": false }
       ]
     },
     {
@@ -70,9 +70,9 @@
       "reveal": "Colombianen waren de eerste grote Latino-golf (jaren '50), lang de meest zichtbare; 'Little Colombia'/Chapinero. Mede gedreven door La Violencia. Vandaag zijn Ecuadorianen de grootste groep. De schaduwkant: cocaïne-jaren '80 op Roosevelt; journalist Manuel de Dios Unanue vermoord in 1992. Terraza 7 (Castiblanco) is het tegenbeeld: cultuur als verzet tegen gentrificatie.",
       "background": "Ketenmigratie deed het werk: elke aankomer een anker voor de volgende. 'Latino' is geen monoliet — de buurt dwingt verschillende nationaliteiten tot nabuurschap. De verschuiving Colombiaans -> Ecuadoriaans/Dominicaans/Mexicaans is zelf een migratieverhaal.",
       "questions": [
-        { "id": "s3-q1", "type": "mc", "prompt": "Welke Latino-gemeenschap kwam als eerste — en in welk decennium?", "options": ["Colombianen, jaren '50 (vóór de Aziaten)", "Mexicanen, jaren '90", "Dominicanen, jaren '70", "Ecuadorianen, jaren '80"], "correctIndex": 0, "points": 2, "isTimeline": true },
-        { "id": "s3-q2", "type": "mc", "prompt": "Welke gemeenschap is vandaag de gróótste in Jackson Heights?", "options": ["Ecuadorianen", "Colombianen", "Indiërs", "Tibetanen"], "correctIndex": 0, "points": 1, "isTimeline": false },
-        { "id": "s3-q3", "type": "mc", "prompt": "Proef de arepa — van welk graan is hij gemaakt?", "options": ["Maïs", "Tarwe", "Rijst", "Gerst"], "correctIndex": 0, "points": 1, "isTimeline": false },
+        { "id": "s3-q1", "type": "mc", "prompt": "Welke Latino-gemeenschap kwam als eerste — en in welk decennium?", "options": ["Mexicanen, jaren '90","Dominicanen, jaren '70","Ecuadorianen, jaren '80","Colombianen, jaren '50"], "correctIndex": 3, "points": 2, "isTimeline": true },
+        { "id": "s3-q2", "type": "mc", "prompt": "Welke gemeenschap is vandaag de gróótste in Jackson Heights?", "options": ["Ecuadorianen","Colombianen","Indiërs","Tibetanen"], "correctIndex": 0, "points": 1, "isTimeline": false },
+        { "id": "s3-q3", "type": "mc", "prompt": "Proef de arepa — van welk graan is hij gemaakt?", "options": ["Tarwe","Rijst","Maïs","Gerst"], "correctIndex": 2, "points": 1, "isTimeline": false },
         { "id": "s3-q4", "type": "open", "prompt": "Terraza 7 / Freddy Castiblanco noemt zijn zaak 'verzet'. Verzet tegen wat?", "modelAnswer": "Tegen gentrificatie / verdringing van de gemeenschap.", "points": 2, "isTimeline": false }
       ]
     },
@@ -83,7 +83,7 @@
       "reveal": "Lorena Borjas, 'de moeder van de trans-Latinx-gemeenschap van Queens', emigreerde in 1981 uit Mexico, was zelf slachtoffer van mensenhandel, en deed hier decennialang outreach: condooms en spuiten, hiv-tests, borgsommen, opvang in haar eigen huis. In 2017 gepardonneerd (campagne o.l.v. Danny Dromm); stierf maart 2020 als een van de eerste COVID-slachtoffers. Ze verbindt vier draden: queer, sekswerk, migratie, pandemie.",
       "background": "De informele economie onder de 7: remittances, valse documenten, zichtbaar sekswerk, bailaderos. Borjas' verhaal is een eerlijker ingang dan een anekdote over eenzaamheid — het gaat over rechten en waardigheid.",
       "questions": [
-        { "id": "s4-q1", "type": "mc", "prompt": "Migranten sturen vanaf straten als deze geld naar huis ('remittances'). Hoeveel gaat er wereldwijd jaarlijks naar lage- en middeninkomenslanden?", "options": ["~6 miljard dollar", "~65 miljard dollar", "~650 miljard dollar", "~6 biljoen dollar"], "correctIndex": 2, "points": 1, "isTimeline": false },
+        { "id": "s4-q1", "type": "mc", "prompt": "Migranten sturen vanaf straten als deze geld naar huis ('remittances'). Hoeveel gaat er wereldwijd jaarlijks naar lage- en middeninkomenslanden?", "options": ["~6 miljard dollar","~65 miljard dollar","~6,5 biljoen dollar","~650 miljard dollar"], "correctIndex": 3, "points": 1, "isTimeline": false },
         { "id": "s4-q2", "type": "open", "prompt": "Lorena Borjas werd 'de moeder van de trans-Latinx-gemeenschap van Queens' genoemd. Wat deed ze hier op Roosevelt?", "modelAnswer": "Outreach voor transvrouwen/sekswerkers/ongedocumenteerden: condooms en spuiten uitdelen, hiv-tests, borgsommen, opvang. Punt bij elke zinnige kern.", "points": 2, "isTimeline": false }
       ]
     },
@@ -96,8 +96,8 @@
       "questions": [
         { "id": "s5-q1", "type": "open", "prompt": "Eén wet uit één jaar verklaart bijna alle migratie hier. Welk jaar — en wat deed die wet?", "modelAnswer": "1965, Immigration & Nationality Act (Hart-Celler): schrapte de raciale quota en opende migratie uit Azië. Jaartal + strekking.", "points": 2, "isTimeline": true },
         { "id": "s5-q2", "type": "open", "prompt": "Kijk omhoog: wat doen al die kantoortjes op de tweede verdiepingen?", "modelAnswer": "Diensten waarmee nieuwkomers het systeem navigeren: green cards, rijbewijzen, belasting, SAT-prep, scheidingen, begrafenissen. Punt bij elke kern.", "points": 1, "isTimeline": false },
-        { "id": "s5-q3", "type": "mc", "prompt": "Na welke gebeurtenis werden Zuid-Aziatische en moslimmannen hier doelwit van 'Special Registration', detenties en surveillance?", "options": ["Na 9/11 (2001)", "Tijdens de Golfoorlog (1991)", "Na de val van de Berlijnse Muur (1989)", "Tijdens COVID (2020)"], "correctIndex": 0, "points": 2, "isTimeline": true },
-        { "id": "s5-q4", "type": "mc", "prompt": "Welke gebeurtenis splitste India en Pakistan in 1947 tot aparte landen?", "options": ["De Partition (deling van Brits-Indië)", "De Tweede Wereldoorlog", "De stichting van de VN", "Een staatsgreep"], "correctIndex": 0, "points": 1, "isTimeline": false }
+        { "id": "s5-q3", "type": "mc", "prompt": "Na welke gebeurtenis werden Zuid-Aziatische en moslimmannen hier doelwit van 'Special Registration', detenties en surveillance?", "options": ["Tijdens de Golfoorlog (1991)","Na de aanslagen van 9/11 (2001)","Na de val van de Berlijnse Muur (1989)","Tijdens de COVID-pandemie (2020)"], "correctIndex": 1, "points": 2, "isTimeline": true },
+        { "id": "s5-q4", "type": "mc", "prompt": "Welke gebeurtenis splitste India en Pakistan in 1947 tot aparte landen?", "options": ["De Partition van Brits-Indië","Het einde van de Tweede Wereldoorlog","De oprichting van de Verenigde Naties","Een militaire staatsgreep in Delhi"], "correctIndex": 0, "points": 1, "isTimeline": false }
       ]
     },
     {
@@ -110,8 +110,8 @@
         { "id": "s6-act-momo", "title": "Momo-blindtest", "body": "Proef momo's van twee/drie plekken; raad Tibetaans vs Nepalees. De host beoordeelt." }
       ],
       "questions": [
-        { "id": "s6-q1", "type": "mc", "prompt": "Veel mensen zeggen 'Tibetaans', maar welke gemeenschap is hier minstens zo groot?", "options": ["De Nepalese", "De Japanse", "De Koreaanse", "De Vietnamese"], "correctIndex": 0, "points": 1, "isTimeline": false },
-        { "id": "s6-q2", "type": "mc", "prompt": "Veel Tibetanen hier zijn geen 'gewone' migranten. Wat dan wel?", "options": ["Vluchtelingen / ballingen (na de Chinese annexatie van Tibet)", "Uitwisselingsstudenten", "Seizoensarbeiders", "Toeristen die bleven"], "correctIndex": 0, "points": 1, "isTimeline": false },
+        { "id": "s6-q1", "type": "mc", "prompt": "Veel mensen zeggen 'Tibetaans', maar welke gemeenschap is hier minstens zo groot?", "options": ["De Japanse","De Koreaanse","De Vietnamese","De Nepalese"], "correctIndex": 3, "points": 1, "isTimeline": false },
+        { "id": "s6-q2", "type": "mc", "prompt": "Veel Tibetanen hier zijn geen 'gewone' migranten. Wat dan wel?", "options": ["Uitgenodigde gastarbeiders uit de regio","Studenten op uitwisseling","Vluchtelingen en politieke ballingen","Seizoensarbeiders in de bouw"], "correctIndex": 2, "points": 1, "isTimeline": false },
         { "id": "s6-q3", "type": "open", "prompt": "Dit was de bioscoop 'The Earle', daarna 'The Eagle'. Wat veranderden de eigenaren — en waarom maar dát?", "modelAnswer": "Eén letter (Earle -> Eagle), om kosten te sparen. (Anekdote — 'het verhaal gaat dat'.)", "points": 2, "isTimeline": true }
       ]
     },
@@ -122,7 +122,7 @@
       "reveal": "María Piedad Cano begon eind jaren '80 op een straatkar; nu een restaurant — informele economie die institutionaliseert. De schaduw is precies onze rode draad: gentrificatie is de nieuwe zeef. Niet alleen de prijs (300k -> ~1 mln), maar documentatie — kredietgeschiedenis en referenties die ook legale migranten missen. Gevolg: kelderwoningen, soms 'hot beds'.",
       "background": "Amanda Burden vergeleek gentrificatie met cholesterol (goede vs slechte soort). Maak de parallel expliciet: in 1910 een coöperatie-stemming, in 2026 een kredietscore — dezelfde machine, ander pak.",
       "questions": [
-        { "id": "s7-q1", "type": "mc", "prompt": "Hoe verkocht de Arepa Lady (María Piedad Cano) haar arepa's oorspronkelijk?", "options": ["Vanaf een straatkar", "In een chic restaurant", "Online", "Op de Greenmarket"], "correctIndex": 0, "points": 1, "isTimeline": false },
+        { "id": "s7-q1", "type": "mc", "prompt": "Hoe verkocht de Arepa Lady (María Piedad Cano) haar arepa's oorspronkelijk?", "options": ["Vanuit een klein eethuis","Vanaf een straatkar op de hoek","Op de wekelijkse Greenmarket","Met een bestelbus langs de deur"], "correctIndex": 1, "points": 1, "isTimeline": false },
         { "id": "s7-q2", "type": "open", "prompt": "In 1910 hield een coöperatie-zeef mensen buiten. Wat is vandaag de nieuwe 'zeef' die nieuwkomers buiten luxe-appartementen houdt?", "modelAnswer": "Documentatie (kredietgeschiedenis, referenties, papieren) plus de prijs. Punt bij 'documenten/kredietcheck'.", "points": 2, "isTimeline": false }
       ]
     },
@@ -146,7 +146,7 @@
       "reveal": "Jackson Heights was het epicentrum van de COVID-uitbraak in NYC — de bewoners van gedeelde kelders waren de essentiële werkers die niet konden thuiswerken (Lorena Borjas stierf in die weken). Uit de ramp groeide de 34th Avenue Open Street, die nu wordt beschreven als 'de eerste superblock van New York'. Van afgeschermde privételuin (1910) naar heroverde publieke straat (2020).",
       "background": "Elmhurst Hospital werd het nationale symbool van een overbelast systeem. Gedragen door buurtactivisten (o.a. Jim Burke). Zondag: Greenmarket bij Travers Park.",
       "questions": [
-        { "id": "s9-q1", "type": "mc", "prompt": "Tijdens welke wereldgebeurtenis werd deze autovrije straat een 'superblock'? (cliffhanger van Stop 1)", "options": ["De COVID-pandemie (2020)", "9/11", "De financiële crisis van 2008", "Orkaan Sandy (2012)"], "correctIndex": 0, "points": 2, "isTimeline": true }
+        { "id": "s9-q1", "type": "mc", "prompt": "Tijdens welke wereldgebeurtenis werd deze autovrije straat een 'superblock'? (cliffhanger van Stop 1)", "options": ["De COVID-pandemie (2020)","De aanslagen van 9/11 (2001)","De financiële crisis (2008)","Orkaan Sandy (2012)"], "correctIndex": 0, "points": 2, "isTimeline": true }
       ]
     },
     {
