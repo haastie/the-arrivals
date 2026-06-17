@@ -4,11 +4,13 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'success'
 
 const variantClasses: Record<Variant, string> = {
-  primary: 'bg-amber-glow text-ink hover:brightness-105 active:brightness-95',
-  secondary: 'bg-ink-soft text-paper border border-paper/20 hover:border-paper/40',
+  primary:
+    'bg-gradient-to-b from-amber-300 to-amber-glow text-ink shadow-[0_10px_30px_-10px_rgba(251,191,36,0.55)] hover:from-amber-200 hover:to-amber-300',
+  secondary:
+    'bg-paper/10 text-paper border border-paper/15 backdrop-blur-sm hover:bg-paper/15 hover:border-paper/30',
   ghost: 'bg-transparent text-paper/80 hover:text-paper hover:bg-paper/5',
-  danger: 'bg-rose-mark text-white hover:brightness-110',
-  success: 'bg-jade text-white hover:brightness-110',
+  danger: 'bg-rose-mark text-white shadow-[0_10px_30px_-12px_rgba(190,18,60,0.6)] hover:brightness-110',
+  success: 'bg-jade text-white shadow-[0_10px_30px_-12px_rgba(4,120,87,0.6)] hover:brightness-110',
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -25,7 +27,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-base font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
+      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-base font-semibold tracking-tight transition duration-200 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-glow/70 focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 ${
         variantClasses[variant]
       } ${block ? 'w-full' : ''} ${className}`}
       {...rest}
@@ -47,12 +49,25 @@ export function Card({
 }) {
   return (
     <div
-      className={`rounded-3xl bg-paper p-5 text-ink shadow-lg ${
-        accent ? 'ring-2 ring-amber-glow' : ''
+      className={`rounded-3xl border border-black/5 bg-paper p-5 text-ink shadow-[0_1px_3px_rgba(2,6,23,0.08),0_22px_45px_-24px_rgba(2,6,23,0.6)] ${
+        accent
+          ? 'ring-2 ring-amber-glow shadow-[0_0_0_1px_rgba(251,191,36,0.35),0_22px_55px_-22px_rgba(251,191,36,0.5)]'
+          : ''
       } ${className}`}
     >
       {children}
     </div>
+  )
+}
+
+// --- Mono-label (vertrekbord-stijl) -------------------------------------
+export function Tag({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border border-paper/15 bg-paper/5 px-2.5 py-1 font-mono text-[11px] tracking-[0.18em] text-paper/70 uppercase ${className}`}
+    >
+      {children}
+    </span>
   )
 }
 
@@ -65,8 +80,8 @@ export function Screen({
   className?: string
 }) {
   return (
-    <div className="min-h-full w-full bg-ink">
-      <div className={`mx-auto flex min-h-full w-full max-w-md flex-col px-4 pt-5 pb-10 ${className}`}>
+    <div className="min-h-dvh w-full">
+      <div className={`mx-auto flex min-h-dvh w-full max-w-md flex-col px-4 pt-5 pb-10 ${className}`}>
         {children}
       </div>
     </div>
@@ -76,7 +91,9 @@ export function Screen({
 // --- Meertalige groet in de header (knipoog naar diversiteit) ------------
 export function MultilingualGreeting({ className = '' }: { className?: string }) {
   return (
-    <p className={`text-xs tracking-wide text-amber-glow/80 ${className}`}>
+    <p
+      className={`font-mono text-[11px] tracking-[0.22em] text-amber-glow/85 uppercase ${className}`}
+    >
       hola · namaste · tashi delek · হ্যালো · hello
     </p>
   )
