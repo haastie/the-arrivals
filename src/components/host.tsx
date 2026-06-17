@@ -257,7 +257,7 @@ export function HostActivePanel({ ctx }: { ctx: HostCtx }) {
 function ActivePanelHeader({ stop, q, status }: { stop?: Stop; q: Question; status: ActiveStatus }) {
   const { isTimelineQuestion } = useContent()
   const label =
-    status === 'open' ? 'Open — inzendingen komen binnen'
+    status === 'open' ? 'Open - inzendingen komen binnen'
       : status === 'locked' ? 'Gesloten'
         : status === 'revealed' ? 'Onthuld' : ''
   return (

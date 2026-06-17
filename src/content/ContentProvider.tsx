@@ -42,7 +42,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 export function useContent(): MappedContent {
   const ctx = useContext(Ctx)
   if (!ctx) throw new Error('useContent buiten ContentProvider')
-  if (!ctx.content) throw new Error('content nog niet geladen — render achter useContentState().loading')
+  if (!ctx.content) throw new Error('content nog niet geladen - render achter useContentState().loading')
   return ctx.content
 }
 

@@ -38,7 +38,7 @@ export async function joinSession(joinCode: string, name: string): Promise<Joine
 }
 
 // --- Antwoorden ----------------------------------------------------------
-// (Warm-up scoort lokaal in de browser — geen DB-schrijfactie meer; zie warmupLocal.ts)
+// (Warm-up scoort lokaal in de browser - geen DB-schrijfactie meer; zie warmupLocal.ts)
 
 export async function submitLiveAnswer(args: {
   sessionId: string

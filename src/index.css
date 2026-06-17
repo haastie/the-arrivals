@@ -1,11 +1,11 @@
 @import 'tailwindcss';
 
 /*
-  The Arrivals — design tokens.
+  The Arrivals - design tokens.
   Toon: documentaire-meets-buurtwandeling. Warm, hoog contrast (buiten leesbaar).
 */
 @theme {
-  --color-ink: #1c1917; /* stone-900 — hoofdtekst / donkere achtergrond */
+  --color-ink: #1c1917; /* stone-900 - hoofdtekst / donkere achtergrond */
   --color-ink-soft: #292524; /* stone-800 */
   --color-paper: #faf6ef; /* warm wit */
   --color-paper-dim: #efe7d8;

@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 const url = import.meta.env.VITE_SUPABASE_URL
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-/** True wanneer de env-vars ontbreken — de UI toont dan een nette uitleg i.p.v. te crashen. */
+/** True wanneer de env-vars ontbreken - de UI toont dan een nette uitleg i.p.v. te crashen. */
 export const supabaseConfigured = Boolean(url && anonKey)
 
 if (!supabaseConfigured) {

@@ -28,18 +28,6 @@ export function WarmupView() {
 
       <section className="flex flex-col gap-3">
         <h3 className="px-1 text-sm font-semibold tracking-wide text-paper/60 uppercase">
-          Lees de kaartjes
-        </h3>
-        {warmup.backgroundCards.map((c) => (
-          <Card key={c.id}>
-            <h4 className="font-display text-lg font-bold text-clay">{c.title}</h4>
-            <p className="mt-1.5 text-sm leading-relaxed text-ink/75">{c.body}</p>
-          </Card>
-        ))}
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h3 className="px-1 text-sm font-semibold tracking-wide text-paper/60 uppercase">
           Raad mee
         </h3>
         {questions.map((q) => (
@@ -47,7 +35,7 @@ export function WarmupView() {
         ))}
       </section>
 
-      <Notice tone="info">Vrijblijvend oefenen — dit telt niet mee voor het klassement.</Notice>
+      <Notice tone="info">Vrijblijvend oefenen - dit telt niet mee voor het klassement.</Notice>
     </div>
   )
 }
@@ -124,7 +112,7 @@ function WarmupQuestion({ q }: { q: Question }) {
 
       {answered && (
         <p className="mt-2 text-sm font-medium text-ink/60">
-          {answer?.correct ? 'Goed geraden ✓' : 'Niet helemaal — maar het is maar oefenen.'}
+          {answer?.correct ? 'Goed geraden ✓' : 'Niet helemaal - maar het is maar oefenen.'}
         </p>
       )}
     </Card>

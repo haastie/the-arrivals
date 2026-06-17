@@ -1,4 +1,4 @@
-// Lokale, niet-tellende warm-up-voortgang (puur oefenen — geen DB, geen leaderboard).
+// Lokale, niet-tellende warm-up-voortgang (puur oefenen - geen DB, geen leaderboard).
 export interface LocalAnswer {
   response: string
   correct: boolean

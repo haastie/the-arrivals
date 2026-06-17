@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "The Arrivals — Jackson Heights",
+    "title": "The Arrivals - Jackson Heights",
     "subtitle": "Een quiz-wandeling door honderd jaar migratie",
     "language": "nl",
     "date": "2026-06-21",
@@ -11,9 +11,9 @@
   },
 
   "warmup": {
-    "intro": "Welkom. Voor we zondag de straat op gaan, een korte opwarmer. Lees de kaartjes, raad mee, en kom alvast in de stemming. Dit telt licht mee voor het klassement — de échte punten verdien je tijdens de wandeling.",
+    "intro": "Welkom. Voor we zondag de straat op gaan, een korte opwarmer. Lees de kaartjes, raad mee, en kom alvast in de stemming. Dit telt licht mee voor het klassement - de échte punten verdien je tijdens de wandeling.",
     "backgroundCards": [
-      { "id": "wu-bg-1", "title": "Een palimpsest", "body": "Jackson Heights is in honderd jaar minstens zes keer 'overschreven' — Anglo-Amerikaans, Joods, Latijns-Amerikaans, Zuid-Aziatisch, Himalayaans, post-pandemisch — zonder dat een laag de vorige wiste. Je ziet ze allemaal tegelijk." },
+      { "id": "wu-bg-1", "title": "Een palimpsest", "body": "Jackson Heights is in honderd jaar minstens zes keer 'overschreven' - Anglo-Amerikaans, Joods, Latijns-Amerikaans, Zuid-Aziatisch, Himalayaans, post-pandemisch - zonder dat een laag de vorige wiste. Je ziet ze allemaal tegelijk." },
       { "id": "wu-bg-2", "title": "Gebouwd om buiten te sluiten", "body": "De buurt werd rond 1910 ontworpen als exclusieve, witte enclave, compleet met uitsluitingsclausules. Ze werd uitgerekend de meest diverse plek op aarde. Die ironie is de rode draad van de dag." },
       { "id": "wu-bg-3", "title": "The International Express", "body": "De 7-metrolijn die de buurt ontsluit kreeg de bijnaam 'the International Express' omdat hij door tientallen immigrantengemeenschappen rijdt." }
     ],
@@ -22,7 +22,7 @@
       { "id": "wu-q2", "type": "mc", "prompt": "Hoeveel talen worden er naar schatting in Jackson Heights gesproken?", "options": ["Rond de 20", "Rond de 60", "Meer dan 160", "Precies 100"], "correctIndex": 2, "points": 1, "isTimeline": false },
       { "id": "wu-q3", "type": "mc", "prompt": "Welke metrolijn heet 'the International Express'?", "options": ["De 1", "De 7", "De A", "De L"], "correctIndex": 1, "points": 1, "isTimeline": false },
       { "id": "wu-q4", "type": "mc", "prompt": "Wat is een 'palimpsest'?", "options": ["Een soort metroplattegrond", "Perkament dat is afgekrabd en opnieuw beschreven, met de oude tekst nog vaag zichtbaar", "Een Colombiaans gerecht", "Een art-decostijl"], "correctIndex": 1, "points": 1, "isTimeline": false },
-      { "id": "wu-q5", "type": "open", "prompt": "Wat verwacht je van een buurt met meer dan 160 talen? Schrijf in één zin wat je nieuwsgierig maakt.", "modelAnswer": "Geen goed/fout — host beoordeelt op betrokkenheid; geef iedereen die iets zinnigs schrijft het punt.", "points": 1, "isTimeline": false }
+      { "id": "wu-q5", "type": "open", "prompt": "Wat verwacht je van een buurt met meer dan 160 talen? Schrijf in één zin wat je nieuwsgierig maakt.", "modelAnswer": "Geen goed/fout - host beoordeelt op betrokkenheid; geef iedereen die iets zinnigs schrijft het punt.", "points": 1, "isTimeline": false }
     ]
   },
 
@@ -32,79 +32,79 @@
       "location": "75-59 31st Ave", "era": "Het heden", "layer": "Vóór de tijdreis",
       "food": "Croissant",
       "intro": "Voor we 100 jaar teruggaan, beginnen we in het heden. Pak een croissant en kijk om je heen in de rij.",
-      "reveal": "Een Frans–Sri Lankaanse bakkerij; in de rij staan Latino's, Zuid-Aziaten, zwarte en witte New Yorkers — voor dezelfde croissant. Onthoud dit beeld. Vandaag zoeken we uit hóé dit ontstond op een plek die ooit werd gebouwd om precies deze mensen buiten te houden.",
-      "background": "Cannelle is een symbool zonder folklore: geen festival, gewoon een zondagochtend waarop de hele wereld in dezelfde rij staat. Het is het 'antwoord' van vandaag op de vraag die de hele tour stelt — om daarna terug te spoelen naar 1910.",
+      "reveal": "Een Frans–Sri Lankaanse bakkerij; in de rij staan Latino's, Zuid-Aziaten, zwarte en witte New Yorkers - voor dezelfde croissant. Onthoud dit beeld. Vandaag zoeken we uit hóé dit ontstond op een plek die ooit werd gebouwd om precies deze mensen buiten te houden.",
+      "background": "Cannelle is een symbool zonder folklore: geen festival, gewoon een zondagochtend waarop de hele wereld in dezelfde rij staat. Het is het 'antwoord' van vandaag op de vraag die de hele tour stelt - om daarna terug te spoelen naar 1910.",
       "questions": []
     },
     {
-      "id": "s1", "number": 1, "name": "The Chateau — De Utopie", 
+      "id": "s1", "number": 1, "name": "The Chateau - De Utopie", 
       "location": "Historic District, 81st St & 34th Ave", "era": "1910s", "layer": "1 · Utopie",
-      "intro": "Welkom op de vlakste 'Heights' van New York. Brede straten, slate daken, geen winkel te zien — dit was honderd jaar geleden een belofte. En let op: we staan nú al op de 34th Avenue Open Street. Onthoud deze straat — we eindigen hier.",
+      "intro": "Welkom op de vlakste 'Heights' van New York. Brede straten, slate daken, geen winkel te zien - dit was honderd jaar geleden een belofte. En let op: we staan nú al op de 34th Avenue Open Street. Onthoud deze straat - we eindigen hier.",
       "reveal": "Geen heuvel. Dit heette 'Trains Meadow'. De Queensboro Corporation plakte er 'Heights' op omdat het deftig klonk, en 'Jackson' naar een wegenbaron. Het is het eerste stukje marketing in een buurt die later wereldberoemd werd om het tegenovergestelde van wat de bedenkers wilden. De tuinappartementen met verborgen binnentuinen werden gebouwd voor witte middenklasse-Manhattanieten, mét een uitsluitingsclausule op papier. Diezelfde architectuur huisvest nu de meest diverse populatie ter wereld.",
-      "background": "Begin 20e eeuw ontsloten de Queensboro Bridge (1909) en de metro dit weiland voor forensen. De Queensboro Corporation (Edward MacDougall) bedacht er een prestige-merknaam bij en introduceerde de 'garden apartment': blokken rond een afgeschermde, gedeelde binnentuin. De uitsluiting zat in 'restrictive covenants' — juridische clausules tegen Joden en zwarte Amerikanen, pas in 1948 onafdwingbaar verklaard (Shelley v. Kraemer).",
+      "background": "Begin 20e eeuw ontsloten de Queensboro Bridge (1909) en de metro dit weiland voor forensen. De Queensboro Corporation (Edward MacDougall) bedacht er een prestige-merknaam bij en introduceerde de 'garden apartment': blokken rond een afgeschermde, gedeelde binnentuin. De uitsluiting zat in 'restrictive covenants' - juridische clausules tegen Joden en zwarte Amerikanen, pas in 1948 onafdwingbaar verklaard (Shelley v. Kraemer).",
       "questions": [
-        { "id": "s1-q1", "type": "open", "prompt": "Deze buurt heet 'Heights'. Hoe hoog ligt het hoogste punt — en waarom heet het dan zo?", "modelAnswer": "Het is plat (oud weiland 'Trains Meadow'); 'Heights' is marketing om prestige te suggereren.", "points": 2, "isTimeline": true },
-        { "id": "s1-q2", "type": "mc", "prompt": "Welke groepen mochten hier oorspronkelijk volgens de aktes níét wonen?", "options": ["Joden, zwarte Amerikanen en 'non-Aryans'", "Ieren en Italianen", "Niemand — het stond voor iedereen open", "Alleen niet-Engelssprekenden"], "correctIndex": 0, "points": 1, "isTimeline": false }
+        { "id": "s1-q1", "type": "open", "prompt": "Deze buurt heet 'Heights'. Hoe hoog ligt het hoogste punt - en waarom heet het dan zo?", "modelAnswer": "Het is plat (oud weiland 'Trains Meadow'); 'Heights' is marketing om prestige te suggereren.", "points": 2, "isTimeline": true },
+        { "id": "s1-q2", "type": "mc", "prompt": "Welke groepen mochten hier oorspronkelijk volgens de aktes níét wonen?", "options": ["Joden, zwarte Amerikanen en 'non-Aryans'", "Ieren en Italianen", "Niemand - het stond voor iedereen open", "Alleen niet-Engelssprekenden"], "correctIndex": 0, "points": 1, "isTimeline": false }
       ]
     },
     {
-      "id": "s2", "number": 2, "name": "Methodist Church — De Eerste Scheuren",
+      "id": "s2", "number": 2, "name": "Methodist Church - De Eerste Scheuren",
       "location": "81-10 35th Ave", "era": "1930s–50s", "layer": "2 · Scheuren",
-      "intro": "In dit doodgewone kerkgebouw is in 1938 iets bedacht dat in honderden miljoenen huiskamers belandde. Hint: het gaat over taal — en over een man zonder baan.",
-      "reveal": "Scrabble — uitgevonden in een gebouw waar nu in zes-plus talen wordt gepreekt (vandaag delen drie gemeenten het: Engels, Spaans, Mandarijn). En precies in deze jaren brak de witte utopie: Joden en homoseksuele mannen waren de eersten die er niet hoorden te zijn maar tóch kwamen. De clausule brokkelde af; de buurt begon te lekken.",
-      "background": "De Depressie maakte exclusiviteit economisch onhoudbaar; lege appartementen moesten verhuurd. Alfred Mosher Butts, een werkloze architect, analyseerde de letterfrequentie van het Engels (door NYT-voorpagina's te tellen) om de puntwaarden te bepalen — vandaar de zeldzame, dure Q en Z. Hij testte het spel in deze gemeenschap.",
+      "intro": "In dit doodgewone kerkgebouw is in 1938 iets bedacht dat in honderden miljoenen huiskamers belandde. Hint: het gaat over taal - en over een man zonder baan.",
+      "reveal": "Scrabble - uitgevonden in een gebouw waar nu in zes-plus talen wordt gepreekt (vandaag delen drie gemeenten het: Engels, Spaans, Mandarijn). En precies in deze jaren brak de witte utopie: Joden en homoseksuele mannen waren de eersten die er niet hoorden te zijn maar tóch kwamen. De clausule brokkelde af; de buurt begon te lekken.",
+      "background": "De Depressie maakte exclusiviteit economisch onhoudbaar; lege appartementen moesten verhuurd. Alfred Mosher Butts, een werkloze architect, analyseerde de letterfrequentie van het Engels (door NYT-voorpagina's te tellen) om de puntwaarden te bepalen - vandaar de zeldzame, dure Q en Z. Hij testte het spel in deze gemeenschap.",
       "questions": [
-        { "id": "s2-q1", "type": "open", "prompt": "Welk wereldberoemd bordspel is hier in 1938 bedacht — en wat was het beroep van de bedenker?", "modelAnswer": "Scrabble; de bedenker (Alfred Butts) was een werkloze architect. Beide nodig voor het volle punt.", "points": 2, "isTimeline": true },
+        { "id": "s2-q1", "type": "open", "prompt": "Welk wereldberoemd bordspel is hier in 1938 bedacht - en wat was het beroep van de bedenker?", "modelAnswer": "Scrabble; de bedenker (Alfred Butts) was een werkloze architect. Beide nodig voor het volle punt.", "points": 2, "isTimeline": true },
         { "id": "s2-q2", "type": "mc", "prompt": "Welke twee groepen 'lekten' als eerste de witte utopie binnen in de jaren '40?", "options": ["Joodse New Yorkers en homoseksuele mannen", "Colombianen en Mexicanen", "Tibetanen en Nepalezen", "Ierse en Italiaanse arbeiders"], "correctIndex": 0, "points": 1, "isTimeline": false }
       ]
     },
     {
-      "id": "s3", "number": 3, "name": "De Latino-hoek — La Pequeña Colombia ↔ Terraza 7",
+      "id": "s3", "number": 3, "name": "De Latino-hoek - La Pequeña Colombia ↔ Terraza 7",
       "location": "83-27 Roosevelt Ave + Gleane St", "era": "1950s ↔ nu", "layer": "2½ + 6 · Latino",
       "food": "Empanada / arepa",
-      "intro": "Hier begint Latijns-Amerika in Jackson Heights — niet in de jaren '90, veel eerder. Eén gemeenschap was de voorhoede. En één blok verderop staat een bar waarvan de eigenaar zegt dat het géén bar is, maar verzet. Raad: welke gemeenschap, welk decennium — en verzet tegen wat?",
-      "reveal": "Colombianen, vanaf de jaren '50, ruim vóór iedereen. Dit deel heette decennialang 'Little Colombia' / Chapinero, naar een wijk in Bogotá. Ketenmigratie: wie er is, haalt de volgende — een neef, een heel dorp uit Tolima. De arepa is een maïskoek (de Salvadoraanse pupusa is dikker en gevuld). En Terraza 7 van Freddy Castiblanco framet zich expliciet als verzet tegen gentrificatie — dezelfde gemeenschap, zeventig jaar later, vechtend om te blijven.",
-      "background": "De Colombiaanse emigratie kwam mede op gang door La Violencia (ca. 1948–1958), de bloedige Colombiaanse strijd die mensen het land uit dreef. Roosevelt Avenue groeide uit tot de slagader van een hele Latijns-Amerikaanse economie: remittances (migranten sturen wereldwijd >½ biljoen $/jr naar huis, meer dan alle ontwikkelingshulp), maar ook valse documenten, zichtbaar sekswerk en de bailaderos — dancings waar een migrant voor een paar dollar een dans koopt en eerst telefoonfoto's van de kinderen thuis laat zien.",
+      "intro": "Hier begint Latijns-Amerika in Jackson Heights - niet in de jaren '90, veel eerder. Eén gemeenschap was de voorhoede. En één blok verderop staat een bar waarvan de eigenaar zegt dat het géén bar is, maar verzet. Raad: welke gemeenschap, welk decennium - en verzet tegen wat?",
+      "reveal": "Colombianen, vanaf de jaren '50, ruim vóór iedereen. Dit deel heette decennialang 'Little Colombia' / Chapinero, naar een wijk in Bogotá. Ketenmigratie: wie er is, haalt de volgende - een neef, een heel dorp uit Tolima. De arepa is een maïskoek (de Salvadoraanse pupusa is dikker en gevuld). En Terraza 7 van Freddy Castiblanco framet zich expliciet als verzet tegen gentrificatie - dezelfde gemeenschap, zeventig jaar later, vechtend om te blijven.",
+      "background": "De Colombiaanse emigratie kwam mede op gang door La Violencia (ca. 1948–1958), de bloedige Colombiaanse strijd die mensen het land uit dreef. Roosevelt Avenue groeide uit tot de slagader van een hele Latijns-Amerikaanse economie: remittances (migranten sturen wereldwijd >½ biljoen $/jr naar huis, meer dan alle ontwikkelingshulp), maar ook valse documenten, zichtbaar sekswerk en de bailaderos - dancings waar een migrant voor een paar dollar een dans koopt en eerst telefoonfoto's van de kinderen thuis laat zien.",
       "questions": [
-        { "id": "s3-q1", "type": "mc", "prompt": "Welke Latino-gemeenschap kwam als eerste — en in welk decennium?", "options": ["Colombianen, jaren '50 (vóór de Aziaten)", "Mexicanen, jaren '90", "Dominicanen, jaren '70", "Ecuadorianen, jaren '80"], "correctIndex": 0, "points": 1, "isTimeline": false },
+        { "id": "s3-q1", "type": "mc", "prompt": "Welke Latino-gemeenschap kwam als eerste - en in welk decennium?", "options": ["Colombianen, jaren '50 (vóór de Aziaten)", "Mexicanen, jaren '90", "Dominicanen, jaren '70", "Ecuadorianen, jaren '80"], "correctIndex": 0, "points": 1, "isTimeline": false },
         { "id": "s3-q2", "type": "mc", "prompt": "Proef de arepa. Van welk graan is hij gemaakt?", "options": ["Maïs", "Tarwe", "Rijst", "Gerst"], "correctIndex": 0, "points": 1, "isTimeline": false },
         { "id": "s3-q3", "type": "open", "prompt": "Terraza-eigenaar Freddy Castiblanco noemt zijn zaak 'verzet'. Verzet tegen wat?", "modelAnswer": "Tegen gentrificatie / verdringing van de gemeenschap.", "points": 2, "isTimeline": false }
       ]
     },
     {
-      "id": "s4", "number": 4, "name": "Little India — De Omslag",
+      "id": "s4", "number": 4, "name": "Little India - De Omslag",
       "location": "74th St & 37th Ave", "era": "1965", "layer": "3 · De Omslag",
       "food": "Samosa / paan",
-      "intro": "Bijna élke gemeenschap die we vandaag zien, voert haar aankomst terug op één wet, uit één jaar. Wie raadt het jaar? En: wie kwamen als eersten binnen — en wat voor werk deden ze?",
-      "reveal": "1965, de Immigration & Nationality Act (Hart-Celler), schrapte de raciale quota en opende migratie uit Azië. De eersten waren vaak hoogopgeleid — de wet gaf voorrang aan artsen, ingenieurs, diamanthandelaren. Suketu Mehta kwam in 1977. Het heilige adres was Sam & Raj: apparaten op 110 én 220 volt; sprak je Gujarati, dan geen btw. En de Partition van 1947 verklaart waarom Indiërs, Pakistani en Bangladeshi hier als aparte gemeenschappen naast elkaar wonen.",
-      "background": "Tussen 1924 en 1965 blokkeerden 'national origins quotas' Aziatische migratie bijna volledig. Hart-Celler (getekend aan de voet van het Vrijheidsbeeld) verving dat door beroepskwalificatie en gezinshereniging — en ontketende de grootste niet-Europese migratiegolf in de Amerikaanse geschiedenis. De Partition van 1947 sneed Brits-Indië langs religieuze lijnen in tweeën (ca. 1 miljoen doden, 10–15 miljoen ontheemden); in 1971 scheidde Bangladesh zich af.",
+      "intro": "Bijna élke gemeenschap die we vandaag zien, voert haar aankomst terug op één wet, uit één jaar. Wie raadt het jaar? En: wie kwamen als eersten binnen - en wat voor werk deden ze?",
+      "reveal": "1965, de Immigration & Nationality Act (Hart-Celler), schrapte de raciale quota en opende migratie uit Azië. De eersten waren vaak hoogopgeleid - de wet gaf voorrang aan artsen, ingenieurs, diamanthandelaren. Suketu Mehta kwam in 1977. Het heilige adres was Sam & Raj: apparaten op 110 én 220 volt; sprak je Gujarati, dan geen btw. En de Partition van 1947 verklaart waarom Indiërs, Pakistani en Bangladeshi hier als aparte gemeenschappen naast elkaar wonen.",
+      "background": "Tussen 1924 en 1965 blokkeerden 'national origins quotas' Aziatische migratie bijna volledig. Hart-Celler (getekend aan de voet van het Vrijheidsbeeld) verving dat door beroepskwalificatie en gezinshereniging - en ontketende de grootste niet-Europese migratiegolf in de Amerikaanse geschiedenis. De Partition van 1947 sneed Brits-Indië langs religieuze lijnen in tweeën (ca. 1 miljoen doden, 10–15 miljoen ontheemden); in 1971 scheidde Bangladesh zich af.",
       "questions": [
-        { "id": "s4-q1", "type": "open", "prompt": "Eén wet uit één jaar verklaart bijna alle migratie hier. Welk jaar — en wat deed die wet?", "modelAnswer": "1965, de Immigration & Nationality Act (Hart-Celler): schrapte de raciale nationale quota en opende migratie uit Azië. Jaartal + strekking nodig.", "points": 2, "isTimeline": true },
-        { "id": "s4-q2", "type": "mc", "prompt": "Welk type beroep hadden veel van de eerste Indiase migranten — en waarom?", "options": ["Artsen/ingenieurs/academici — de wet gaf voorrang aan hooggeschoolden", "Landarbeiders — er was vraag naar oogstwerk", "Zeelieden — via de haven", "Studenten — via uitwisseling"], "correctIndex": 0, "points": 1, "isTimeline": false },
+        { "id": "s4-q1", "type": "open", "prompt": "Eén wet uit één jaar verklaart bijna alle migratie hier. Welk jaar - en wat deed die wet?", "modelAnswer": "1965, de Immigration & Nationality Act (Hart-Celler): schrapte de raciale nationale quota en opende migratie uit Azië. Jaartal + strekking nodig.", "points": 2, "isTimeline": true },
+        { "id": "s4-q2", "type": "mc", "prompt": "Welk type beroep hadden veel van de eerste Indiase migranten - en waarom?", "options": ["Artsen/ingenieurs/academici - de wet gaf voorrang aan hooggeschoolden", "Landarbeiders - er was vraag naar oogstwerk", "Zeelieden - via de haven", "Studenten - via uitwisseling"], "correctIndex": 0, "points": 1, "isTimeline": false },
         { "id": "s4-q3", "type": "mc", "prompt": "Welke gebeurtenis maakte India en Pakistan in 1947 tot aparte landen?", "options": ["De Partition (deling van Brits-Indië)", "De Tweede Wereldoorlog", "De stichting van de VN", "Een staatsgreep"], "correctIndex": 0, "points": 1, "isTimeline": false }
       ]
     },
     {
-      "id": "s5", "number": 5, "name": "Diversity Plaza — De Himalaya",
+      "id": "s5", "number": 5, "name": "Diversity Plaza - De Himalaya",
       "location": "73-19 37th Rd (Phayul op 74th St)", "era": "1990s–nu", "layer": "5 · De Himalaya",
       "food": "Momo (blindtest)",
       "intro": "Dit heet Diversity Plaza, maar kijk preciezer: dit is vooral de Himalaya. En dat filmpaleis daar heeft vier levens geleid. Eerst proeven, dan vertel ik welke.",
       "reveal": "De nieuwste laag: Tibetanen, Nepalezen, Bhutanezen en de Bengaalse gemeenschap. Het gebouw: art-deco-bioscoop 'The Earle' (jaren '30) → pornofilms (jaren '70) → Bollywood-theater 'The Eagle' (jaren '80; één letter veranderd om kosten te sparen, G in ander lettertype) → nu Zuid-Aziatisch food court. Eén gevel, vier levens. En veel Tibetanen zijn geen economische migranten maar vluchtelingen/ballingen na de Chinese annexatie van Tibet.",
-      "background": "Na de annexatie van Tibet (vanaf 1950) en de vlucht van de Dalai Lama (1959) ontstond een wereldwijde Tibetaanse diaspora; een bepaling in de Amerikaanse immigratiewet van 1990 wees duizend visa toe aan ontheemde Tibetanen, die via India en Nepal in Queens terechtkwamen. Diversity Plaza is sinds 2012 autovrij — een vroege voorbode van de Open Street waar de tour eindigt.",
+      "background": "Na de annexatie van Tibet (vanaf 1950) en de vlucht van de Dalai Lama (1959) ontstond een wereldwijde Tibetaanse diaspora; een bepaling in de Amerikaanse immigratiewet van 1990 wees duizend visa toe aan ontheemde Tibetanen, die via India en Nepal in Queens terechtkwamen. Diversity Plaza is sinds 2012 autovrij - een vroege voorbode van de Open Street waar de tour eindigt.",
       "activities": [
         { "id": "s5-act-momo", "title": "Momo-blindtest", "body": "Proef momo's van twee/drie plekken en raad welke Tibetaans en welke Nepalees is. De host beoordeelt." }
       ],
       "questions": [
-        { "id": "s5-q1", "type": "open", "prompt": "Dat filmpaleis heette 'The Earle', daarna 'The Eagle'. Wat veranderden de eigenaren — en waarom maar dát?", "modelAnswer": "Eén letter (Earle → Eagle), om kosten te sparen; ze wilden niet in een heel nieuw bord investeren.", "points": 2, "isTimeline": true },
+        { "id": "s5-q1", "type": "open", "prompt": "Dat filmpaleis heette 'The Earle', daarna 'The Eagle'. Wat veranderden de eigenaren - en waarom maar dát?", "modelAnswer": "Eén letter (Earle → Eagle), om kosten te sparen; ze wilden niet in een heel nieuw bord investeren.", "points": 2, "isTimeline": true },
         { "id": "s5-q2", "type": "mc", "prompt": "Veel Tibetanen hier zijn niet zomaar migranten, maar iets specifiekers. Wat?", "options": ["Vluchtelingen / ballingen (na de Chinese annexatie van Tibet)", "Uitwisselingsstudenten", "Seizoensarbeiders", "Toeristen die bleven"], "correctIndex": 0, "points": 1, "isTimeline": false }
       ]
     },
     {
-      "id": "s6", "number": 6, "name": "Arepa Lady — Renewal",
+      "id": "s6", "number": 6, "name": "Arepa Lady - Renewal",
       "location": "77-17 37th Ave", "era": "late 80s → nu", "layer": "6 · Renewal",
       "food": "Arepa",
-      "intro": "We zijn nu in de jaren '90 — het dieptepunt van de buurt, en tegelijk de eerste groene scheuten. Dit is er één van. Raad: hoe begon de Arepa Lady?",
-      "reveal": "María Piedad Cano begon eind jaren '80 op een hoek van Roosevelt arepa's te bakken op een straatkar. Ze werd een symbool; haar familie runt nu een restaurant — de informele economie die zich institutionaliseert. De schaduw: tuinappartementen van ooit 300k naderen het miljoen, en nieuwe torens vragen documenten die een migrant niet heeft → meer kelderwoningen, soms 'hot beds'.",
+      "intro": "We zijn nu in de jaren '90 - het dieptepunt van de buurt, en tegelijk de eerste groene scheuten. Dit is er één van. Raad: hoe begon de Arepa Lady?",
+      "reveal": "María Piedad Cano begon eind jaren '80 op een hoek van Roosevelt arepa's te bakken op een straatkar. Ze werd een symbool; haar familie runt nu een restaurant - de informele economie die zich institutionaliseert. De schaduw: tuinappartementen van ooit 300k naderen het miljoen, en nieuwe torens vragen documenten die een migrant niet heeft → meer kelderwoningen, soms 'hot beds'.",
       "background": "Stadsplanner Amanda Burden vergeleek gentrificatie ooit met cholesterol: er is een goede soort (inkomensdiversiteit) en een slechte (verdringing van wie de buurt maakte). In JH zit het venijn vooral in documentatie: ook legale nieuwkomers hebben vaak geen kredietgeschiedenis of referenties.",
       "questions": [
         { "id": "s6-q1", "type": "mc", "prompt": "Hoe verkocht de Arepa Lady (María Piedad Cano) haar arepa's oorspronkelijk?", "options": ["Vanaf een straatkar", "In een chic restaurant", "Online", "Op de Greenmarket"], "correctIndex": 0, "points": 1, "isTimeline": false },
@@ -112,40 +112,40 @@
       ]
     },
     {
-      "id": "s7", "number": 7, "name": "Julio Rivera Corner — De Donkere Jaren",
+      "id": "s7", "number": 7, "name": "Julio Rivera Corner - De Donkere Jaren",
       "location": "78th St & 37th Ave", "era": "1990", "layer": "4 · Donkere jaren",
       "intro": "We stappen even terug in de tijd, naar de donkerste jaren. Lees in stilte het straatbordje. Eén minuut.",
-      "reveal": "In 1990 werd Julio Rivera, een 29-jarige homoseksuele barman, door skinheads vermoord. Uit die moord ontstond de Queens Pride Parade, opgericht door buurtbewoner en leraar Danny Dromm. Vandaag heeft Jackson Heights de op één na grootste Pride van de stad én de grootste Latino-LGBTQ-scene — náást zeer conservatieve gemeenschappen. Mehta noemt dat geen 'tolerantie' maar 'het zakken van de wapens'.",
+      "reveal": "In 1990 werd Julio Rivera, een 29-jarige homoseksuele barman, door skinheads vermoord. Uit die moord ontstond de Queens Pride Parade, opgericht door buurtbewoner en leraar Danny Dromm. Vandaag heeft Jackson Heights de op één na grootste Pride van de stad én de grootste Latino-LGBTQ-scene - náást zeer conservatieve gemeenschappen. Mehta noemt dat geen 'tolerantie' maar 'het zakken van de wapens'.",
       "background": "De jaren '80–'90 waren het dieptepunt voor stad en buurt: criminaliteit, verval, aids. De zaak-Rivera werd een van de eerste in NY die als anti-homo hate crime werd vervolgd en mobiliseerde de gemeenschap; Dromm werd later een openlijk homoseksueel gemeenteraadslid. Het diepere punt: samenleven is hier geen harmonie maar functioneren ondanks onenigheid, geholpen door gedeelde ruimte en wetten die wél worden gehandhaafd.",
       "activities": [
         { "id": "s7-act-stilte", "title": "Stilteminuut", "body": "Eén minuut stilte; lees het straatbordje. Geen pathos." }
       ],
       "questions": [
-        { "id": "s7-q1", "type": "open", "prompt": "Naar wie is deze hoek vernoemd — en welke jaarlijkse gebeurtenis komt rechtstreeks voort uit zijn dood in 1990?", "modelAnswer": "Julio Rivera; de Queens Pride Parade (opgericht door Danny Dromm). Naam + gebeurtenis nodig.", "points": 2, "isTimeline": true }
+        { "id": "s7-q1", "type": "open", "prompt": "Naar wie is deze hoek vernoemd - en welke jaarlijkse gebeurtenis komt rechtstreeks voort uit zijn dood in 1990?", "modelAnswer": "Julio Rivera; de Queens Pride Parade (opgericht door Danny Dromm). Naam + gebeurtenis nodig.", "points": 2, "isTimeline": true }
       ]
     },
     {
-      "id": "s8", "number": 8, "name": "Travers Park + 34th Ave Open Street — Het Nu",
+      "id": "s8", "number": 8, "name": "Travers Park + 34th Ave Open Street - Het Nu",
       "location": "76-09 34th Ave", "era": "nu (pandemie)", "layer": "6 · Nu",
-      "intro": "Nu komen we echt binnen waar we vanochtend op stonden. Weten jullie de cliffhanger nog — tijdens welke gebeurtenis ontstond deze autovrije straat?",
-      "reveal": "In 2020 was Jackson Heights het epicentrum van de COVID-uitbraak in New York; de chauffeurs en bezorgers in de gedeelde kelders konden niet thuiswerken. Uit die ramp vocht de gemeenschap een autovrije straat af: twee mijl, dagelijks dicht voor verkeer, open voor leven. Nu 'de eerste superblock van New York'. Van exclusieve binnentuin (1910) naar inclusieve straat (2020) — het hele verhaal in één gebaar.",
+      "intro": "Nu komen we echt binnen waar we vanochtend op stonden. Weten jullie de cliffhanger nog - tijdens welke gebeurtenis ontstond deze autovrije straat?",
+      "reveal": "In 2020 was Jackson Heights het epicentrum van de COVID-uitbraak in New York; de chauffeurs en bezorgers in de gedeelde kelders konden niet thuiswerken. Uit die ramp vocht de gemeenschap een autovrije straat af: twee mijl, dagelijks dicht voor verkeer, open voor leven. Nu 'de eerste superblock van New York'. Van exclusieve binnentuin (1910) naar inclusieve straat (2020) - het hele verhaal in één gebaar.",
       "background": "Elmhurst Hospital vlakbij werd het nationale symbool van een overbelast zorgsysteem. De Open Street wordt mede gedragen door buurtactivisten als Jim Burke en de open-streets-coalitie, met dagelijkse programmering voor kinderen en ouderen. Op zondag is er bovendien de Greenmarket bij Travers Park.",
       "questions": [
         { "id": "s8-q1", "type": "mc", "prompt": "Tijdens welke wereldgebeurtenis werd deze straat een 'superblock'? (cliffhanger van Stop 1)", "options": ["De COVID-pandemie (2020)", "9/11", "De financiële crisis van 2008", "De orkaan Sandy (2012)"], "correctIndex": 0, "points": 2, "isTimeline": true }
       ]
     },
     {
-      "id": "s9", "number": 9, "name": "Jahn's — Het Slot",
+      "id": "s9", "number": 9, "name": "Jahn's - Het Slot",
       "location": "81-04 37th Ave (sinds 1897)", "era": "slot", "layer": "Slot",
       "food": "Kitchen Sink Sundae for eight",
-      "intro": "We eindigen waar generaties JH-families eindigden — met iets wat je onmogelijk alleen op kunt.",
-      "reveal": "Jahn's, 1897, met de Kitchen Sink Sundae for eight — te groot om alleen op te eten, alleen samen te realiseren. Mehta: 'Dit is de belofte van de Nieuwe Wereld.' We eindigen letterlijk waar we begonnen.",
+      "intro": "We eindigen waar generaties JH-families eindigden - met iets wat je onmogelijk alleen op kunt.",
+      "reveal": "Jahn's, 1897, met de Kitchen Sink Sundae for eight - te groot om alleen op te eten, alleen samen te realiseren. Mehta: 'Dit is de belofte van de Nieuwe Wereld.' We eindigen letterlijk waar we begonnen.",
       "background": "Gebruik het slot niet om te concluderen. De kracht van de tour is dat ze geen antwoord geeft. Stel de slotvraag en laat de groep het laatste woord.",
       "activities": [
         { "id": "s9-act-tally", "title": "Eindstand & de kers", "body": "Tel de Tijdlijn-score (6 vragen). De winnaar krijgt de kers van de sundae." }
       ],
       "questions": [
-        { "id": "s9-q1", "type": "open", "prompt": "Slotvraag (discussie, niet gescoord): Je hebt de wereld doorkruist zonder te vliegen. Wat zegt dat over de wereld? En over deze stad?", "modelAnswer": "Geen goed/fout — discussie. Niet scoren; laat iedereen reageren.", "points": 0, "isTimeline": false, "discussion": true }
+        { "id": "s9-q1", "type": "open", "prompt": "Slotvraag (discussie, niet gescoord): Je hebt de wereld doorkruist zonder te vliegen. Wat zegt dat over de wereld? En over deze stad?", "modelAnswer": "Geen goed/fout - discussie. Niet scoren; laat iedereen reageren.", "points": 0, "isTimeline": false, "discussion": true }
       ]
     }
   ],

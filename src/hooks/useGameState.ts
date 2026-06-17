@@ -17,7 +17,7 @@ export interface GameState {
 
 /**
  * Eén realtime bron van waarheid voor een sessie: de sessie-rij, deelnemers en
- * antwoorden. Robuust tegen korte verbindingsval — bij (her)verbinden, online-
+ * antwoorden. Robuust tegen korte verbindingsval - bij (her)verbinden, online-
  * worden of terug-focussen wordt de volledige state opnieuw geladen.
  */
 export function useGameState(sessionId: string | null | undefined): GameState {

@@ -30,7 +30,7 @@ export default function Warmup() {
     <Screen>
       <header className="mb-4">
         <MultilingualGreeting />
-        <h1 className="font-display mt-2 text-2xl font-bold text-paper">Warm-up — thuis oefenen</h1>
+        <h1 className="font-display mt-2 text-2xl font-bold text-paper">Warm-up - thuis oefenen</h1>
         <p className="text-sm text-paper/60">
           Vrijblijvend; dit telt niet mee voor het klassement.
         </p>
