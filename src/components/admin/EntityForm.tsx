@@ -102,7 +102,7 @@ export function EntityForm({
           {busy ? 'Opslaan…' : 'Opslaan'}
         </Button>
         {onCancel && (
-          <Button variant="ghost" onClick={onCancel}>
+          <Button variant="outline" onClick={onCancel}>
             Annuleren
           </Button>
         )}

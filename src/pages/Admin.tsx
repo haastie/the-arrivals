@@ -218,7 +218,7 @@ function RowItem({
         <p className="truncate text-sm font-semibold text-ink">{title}</p>
         {subtitle && <p className="truncate text-xs text-ink/50">{subtitle}</p>}
       </div>
-      <Button variant="secondary" onClick={onEdit} className="px-3 py-2 text-sm">
+      <Button variant="outline" onClick={onEdit} className="px-3 py-2 text-sm">
         Bewerk
       </Button>
       <button
