@@ -16,8 +16,12 @@ function pickRandom<T>(items: T[], n: number): T[] {
 
 export function WarmupView() {
   const { warmup } = useContent()
-  // Telkens 3 willekeurige warm-up-vragen (stabiel binnen dit bezoek).
-  const [questions] = useState(() => pickRandom(warmup.questions, 3))
+  // Telkens 3 willekeurige warm-up-vragen; via de knop laad je een nieuwe set.
+  const [questions, setQuestions] = useState(() => pickRandom(warmup.questions, 3))
+
+  function reroll() {
+    setQuestions(pickRandom(warmup.questions, 3))
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -27,9 +31,16 @@ export function WarmupView() {
       </Card>
 
       <section className="flex flex-col gap-3">
-        <h3 className="px-1 text-sm font-semibold tracking-wide text-paper/60 uppercase">
-          Raad mee
-        </h3>
+        <div className="flex items-center justify-between px-1">
+          <h3 className="text-sm font-semibold tracking-wide text-paper/60 uppercase">Raad mee</h3>
+          <button
+            type="button"
+            onClick={reroll}
+            className="inline-flex items-center gap-1.5 rounded-full bg-paper/10 px-3 py-1.5 text-xs font-medium text-paper/80 transition hover:bg-paper/15"
+          >
+            <span aria-hidden>↻</span> Nieuwe vragen
+          </button>
+        </div>
         {questions.map((q) => (
           <WarmupQuestion key={q.id} q={q} />
         ))}
