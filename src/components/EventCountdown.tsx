@@ -41,6 +41,9 @@ export function EventCountdown({
   station?: string
   time?: string
 }) {
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    `${station} subway station, Jackson Heights, Queens NY`,
+  )}`
   return (
     <div className="rounded-3xl border border-paper/10 bg-paper/5 p-5 backdrop-blur-sm">
       <div className="flex items-center justify-between gap-2">
@@ -68,8 +71,18 @@ export function EventCountdown({
 
       <p className="mt-4 border-t border-paper/10 pt-3 text-sm leading-relaxed text-paper/65">
         We verzamelen om <span className="font-semibold text-paper">{time}</span> bij metrostation{' '}
-        <span className="font-semibold text-paper">{station}</span> - kom op een{' '}
-        <span className="font-semibold text-amber-glow">lege maag</span>.
+        <a
+          href={mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 font-semibold text-amber-glow underline decoration-amber-glow/40 underline-offset-2 hover:decoration-amber-glow"
+        >
+          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0" fill="currentColor" aria-hidden>
+            <path d="M12 2a7 7 0 0 0-7 7c0 4.6 6.1 12.3 6.4 12.6a.8.8 0 0 0 1.2 0C12.9 21.3 19 13.6 19 9a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
+          </svg>
+          {station}
+        </a>{' '}
+        - kom op een <span className="font-semibold text-paper">lege maag</span>.
       </p>
     </div>
   )
