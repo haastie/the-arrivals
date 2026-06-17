@@ -60,7 +60,13 @@ export interface Meta {
   language: string
   date: string
   centralQuestion: string
+  /** v2: de herziene rode draad */
+  redThread: string
+  /** v2: de "zeef die zich herhaalt" (host-context) */
+  mechanism: string
   openingLine: string
+  /** v2: Lenape land acknowledgement */
+  landAcknowledgement: string
   closingLine: string
   scoring: {
     mcPoints: number
@@ -83,6 +89,9 @@ export interface SettingsRow {
   language: string | null
   date: string | null
   central_question: string | null
+  red_thread: string | null
+  mechanism: string | null
+  land_acknowledgement: string | null
   opening_line: string | null
   closing_line: string | null
   warmup_intro: string | null

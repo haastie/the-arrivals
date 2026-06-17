@@ -14,8 +14,11 @@ export function FinishView({
   highlightId?: string
 }) {
   const { meta, stops, timelineQuestionIds } = useContent()
-  const slotStop = stops.find((s) => s.id === 's9')
-  const slotQuestion = slotStop?.questions.find((q) => q.discussion)
+  // Slot = de laatste discussievraag in de tour (v2: Jahn's, s10).
+  const slotQuestion = [...stops]
+    .reverse()
+    .flatMap((s) => s.questions)
+    .find((q) => q.discussion)
   const { winners, topScore } = timelineWinners(participants, answers, timelineQuestionIds)
 
   return (
@@ -37,7 +40,8 @@ export function FinishView({
             {winners.map((w) => w.name).join(' & ')}
           </p>
           <p className="text-sm text-ink/60">
-            {topScore} punten op de zes Tijdlijn-vragen - de kers van de sundae 🍒
+            {topScore} punten op de {timelineQuestionIds.length} Tijdlijn-vragen - de kers van de
+            sundae 🍒
           </p>
         </Card>
       )}

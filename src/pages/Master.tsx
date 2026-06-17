@@ -16,6 +16,7 @@ import { FinishView } from '../components/FinishView'
 import {
   HostActivePanel,
   HostActivityPicker,
+  HostBriefing,
   HostJoinPanel,
   HostLeaderboard,
   HostLobby,
@@ -156,7 +157,10 @@ function HostConsole({ sessionId, secret }: { sessionId: string; secret: string 
         <HostJoinPanel session={session} />
 
         {session.phase === 'warmup' && (
-          <HostLobby participants={participants} onStart={() => setPhase('live')} />
+          <>
+            <HostBriefing />
+            <HostLobby participants={participants} onStart={() => setPhase('live')} />
+          </>
         )}
 
         {session.phase === 'live' && (
