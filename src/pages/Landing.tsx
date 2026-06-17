@@ -2,10 +2,15 @@ import { Link } from 'react-router-dom'
 import { useContentState } from '../content/content'
 import { Button, MultilingualGreeting, Screen, Tag } from '../components/ui'
 import { MusicButton } from '../components/MusicButton'
+import { EventCountdown, useCountdown } from '../components/EventCountdown'
+import { tourStartMs } from '../lib/countdown'
 
 export default function Landing() {
   const { content } = useContentState()
   const meta = content?.meta
+  const target = tourStartMs(meta?.date ?? '2026-06-21')
+  const cd = useCountdown(target)
+  const locked = target !== null && !cd.done
 
   return (
     <Screen className="justify-between">
@@ -38,9 +43,22 @@ export default function Landing() {
       </div>
 
       <div className="mt-10 flex flex-col gap-3">
-        <Link to="/join">
-          <Button block>Doe mee</Button>
-        </Link>
+        <EventCountdown parts={cd} />
+
+        {locked ? (
+          <div>
+            <Button block disabled>
+              Doe mee opent om 13:00
+            </Button>
+            <p className="mt-1.5 text-center text-xs text-paper/40">
+              De groepswandeling start bij 90 St-Elmhurst Av.
+            </p>
+          </div>
+        ) : (
+          <Link to="/join">
+            <Button block>Doe mee</Button>
+          </Link>
+        )}
         <Link to="/warmup">
           <Button variant="secondary" block>
             Thuis oefenen (warm-up)
