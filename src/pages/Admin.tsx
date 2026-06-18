@@ -8,6 +8,7 @@ import {
   stopFields,
   cardFields,
   activityFields,
+  restaurantFields,
   settingsFields,
 } from '../components/admin/schemas'
 import {
@@ -19,13 +20,16 @@ import {
   adminDeleteCard,
   adminUpsertActivity,
   adminDeleteActivity,
+  adminUpsertRestaurant,
+  adminDeleteRestaurant,
   adminUpdateSettings,
 } from '../lib/admin-api'
 import type { Meta, Question, Stop } from '../content/types'
+import type { Restaurant } from '../data/jacksonHeightsMap'
 import { SetupNeeded } from '../components/SetupNeeded'
 import { Button, Card, Screen } from '../components/ui'
 
-type Tab = 'questions' | 'stops' | 'cards' | 'activities' | 'settings'
+type Tab = 'questions' | 'stops' | 'cards' | 'activities' | 'restaurants' | 'settings'
 type Row = Record<string, unknown>
 
 export default function Admin() {
@@ -58,7 +62,7 @@ function AdminConsole({ secret }: { secret: string }) {
     setEditing(null)
   }
 
-  const tabs: Tab[] = ['questions', 'stops', 'cards', 'activities', 'settings']
+  const tabs: Tab[] = ['questions', 'stops', 'cards', 'activities', 'restaurants', 'settings']
 
   return (
     <Screen>
@@ -176,6 +180,31 @@ function AdminConsole({ secret }: { secret: string }) {
         </Section>
       )}
 
+      {tab === 'restaurants' && (
+        <Section
+          title="Restaurants (eten-kaart)"
+          onNew={() => setEditing({ active: true, quotes: [], x: 50, y: 50 })}
+        >
+          {editing && (
+            <EntityForm
+              fields={restaurantFields}
+              initial={editing}
+              onSubmit={(row) => save(() => adminUpsertRestaurant(secret, row))}
+              onCancel={() => setEditing(null)}
+            />
+          )}
+          {content.restaurants.map((r) => (
+            <RowItem
+              key={r.id}
+              title={r.name}
+              subtitle={`${r.cuisine} · ${r.communityId}`}
+              onEdit={() => setEditing(dbRestaurant(r))}
+              onDelete={() => save(() => adminDeleteRestaurant(secret, r.id))}
+            />
+          ))}
+        </Section>
+      )}
+
       {tab === 'settings' && (
         <EntityForm
           fields={settingsFields}
@@ -262,6 +291,28 @@ function dbStop(s: Stop): Row {
     intro: s.intro,
     reveal: s.reveal,
     background: s.background,
+  }
+}
+function dbRestaurant(r: Restaurant): Row {
+  return {
+    id: r.id,
+    name: r.name,
+    community_id: r.communityId,
+    lang_group: r.langGroup,
+    cuisine: r.cuisine,
+    price: r.price,
+    address: r.address,
+    x: r.x,
+    y: r.y,
+    rating: r.rating,
+    rating_count: r.ratingCount,
+    rating_source: r.ratingSource,
+    consensus: r.consensus,
+    dish: r.dish,
+    dish_source: r.dishSource,
+    quotes: r.quotes,
+    tour: r.tour,
+    active: true,
   }
 }
 function dbSettings(meta: Meta, warmupIntro: string): Row {

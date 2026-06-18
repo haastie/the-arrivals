@@ -1,8 +1,14 @@
 import { Link } from 'react-router-dom'
 import { Screen } from '../components/ui'
 import { FoodMapView } from '../components/foodmap/FoodMapView'
+import { useContentState } from '../content/content'
+import { RESTAURANTS } from '../data/jacksonHeightsMap'
 
 export default function FoodMap() {
+  const { content } = useContentState()
+  // Live uit de DB; valt terug op de gebundelde startdata vóór migratie 0008.
+  const restaurants = content?.restaurants?.length ? content.restaurants : RESTAURANTS
+
   return (
     <Screen>
       <header className="ta-rise mb-4">
@@ -26,7 +32,7 @@ export default function FoodMap() {
         </p>
       </header>
 
-      <FoodMapView />
+      <FoodMapView restaurants={restaurants} />
 
       <div className="mt-8 text-center">
         <Link to="/" className="text-xs text-paper/40 underline underline-offset-4">

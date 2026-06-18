@@ -1,6 +1,7 @@
 import type {
-  Activity, Content, ContentRows, Meta, Question, QuestionRow, Stop, Warmup,
+  Activity, Content, ContentRows, Meta, Question, QuestionRow, RestaurantRow, Stop, Warmup,
 } from './types'
+import type { Restaurant } from '../data/jacksonHeightsMap'
 
 export interface QuestionLocation {
   question: Question
@@ -11,10 +12,33 @@ export interface QuestionLocation {
 
 export interface MappedContent extends Content {
   stopsWithQuestions: Stop[]
+  restaurants: Restaurant[]
   findQuestion(id: string | null | undefined): QuestionLocation | undefined
   findActivity(id: string | null | undefined): { activity: Activity; stop: Stop } | undefined
   isActivityId(id: string | null | undefined): boolean
   isTimelineQuestion(id: string): boolean
+}
+
+function toRestaurant(r: RestaurantRow): Restaurant {
+  return {
+    id: r.id,
+    name: r.name,
+    communityId: r.community_id,
+    cuisine: r.cuisine ?? '',
+    price: r.price ?? '',
+    address: r.address ?? '',
+    x: r.x,
+    y: r.y,
+    langGroup: r.lang_group ?? 'spanish',
+    tour: r.tour ?? 0,
+    rating: r.rating ?? 0,
+    ratingCount: r.rating_count ?? 0,
+    ratingSource: r.rating_source ?? '',
+    consensus: r.consensus ?? '',
+    dish: r.dish ?? '',
+    dishSource: r.dish_source ?? '',
+    quotes: Array.isArray(r.quotes) ? r.quotes : [],
+  }
 }
 
 export function mapContent(rows: ContentRows): MappedContent {
@@ -91,11 +115,17 @@ export function mapContent(rows: ContentRows): MappedContent {
     for (const a of stop.activities ?? []) activityIndex.set(a.id, { activity: a, stop })
   }
 
+  const restaurants = [...rows.restaurants]
+    .filter((r) => r.active)
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map(toRestaurant)
+
   return {
     meta,
     warmup,
     stops,
     timelineQuestionIds,
+    restaurants,
     stopsWithQuestions: stops.filter((st) => st.questions.length > 0),
     findQuestion: (id) => (id ? questionIndex.get(id) : undefined),
     findActivity: (id) => (id ? activityIndex.get(id) : undefined),

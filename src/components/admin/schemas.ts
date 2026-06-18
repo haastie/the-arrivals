@@ -1,4 +1,13 @@
-export type FieldType = 'text' | 'textarea' | 'number' | 'boolean' | 'select' | 'options'
+import { COMMUNITIES, PHRASE_GROUPS } from '../../data/jacksonHeightsMap'
+
+export type FieldType =
+  | 'text'
+  | 'textarea'
+  | 'number'
+  | 'boolean'
+  | 'select'
+  | 'options'
+  | 'quotes'
 export interface Field {
   key: string
   label: string
@@ -60,6 +69,38 @@ export const activityFields = (stopOptions: { value: string; label: string }[]):
   { key: 'title', label: 'Titel', type: 'text', required: true },
   { key: 'body', label: 'Instructie', type: 'textarea', required: true },
   { key: 'sort_order', label: 'Volgorde', type: 'number' },
+]
+
+export const restaurantFields: Field[] = [
+  { key: 'id', label: 'ID (leeg = automatisch)', type: 'text', help: 'bv. arepa-lady' },
+  { key: 'name', label: 'Naam', type: 'text', required: true },
+  {
+    key: 'community_id',
+    label: 'Gemeenschap',
+    type: 'select',
+    required: true,
+    options: COMMUNITIES.map((c) => ({ value: c.id, label: c.label })),
+  },
+  {
+    key: 'lang_group',
+    label: 'Taal (voor de zinnen)',
+    type: 'select',
+    options: PHRASE_GROUPS.map((g) => ({ value: g.id, label: g.label })),
+  },
+  { key: 'cuisine', label: 'Keuken', type: 'text' },
+  { key: 'price', label: 'Prijs ($ / $$ / $$$)', type: 'text' },
+  { key: 'address', label: 'Adres', type: 'text' },
+  { key: 'x', label: 'Kaart X (0-100, links→rechts)', type: 'number' },
+  { key: 'y', label: 'Kaart Y (0-100, boven→onder)', type: 'number' },
+  { key: 'rating', label: 'Rating (0-5)', type: 'number' },
+  { key: 'rating_count', label: 'Aantal reviews', type: 'number' },
+  { key: 'rating_source', label: 'Bron rating', type: 'text' },
+  { key: 'consensus', label: 'De consensus', type: 'textarea' },
+  { key: 'dish', label: 'Aanbevolen gerecht', type: 'text' },
+  { key: 'dish_source', label: 'Bron gerecht', type: 'text' },
+  { key: 'quotes', label: 'Citaten', type: 'quotes' },
+  { key: 'tour', label: 'Volgorde', type: 'number' },
+  { key: 'active', label: 'Actief (zichtbaar)', type: 'boolean' },
 ]
 
 export const settingsFields: Field[] = [

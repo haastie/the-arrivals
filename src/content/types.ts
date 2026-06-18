@@ -141,10 +141,33 @@ export interface ActivityRow {
   sort_order: number
 }
 
+export interface RestaurantRow {
+  id: string
+  name: string
+  community_id: string
+  cuisine: string | null
+  price: string | null
+  address: string | null
+  x: number
+  y: number
+  lang_group: string | null
+  tour: number | null
+  rating: number | null
+  rating_count: number | null
+  rating_source: string | null
+  consensus: string | null
+  dish: string | null
+  dish_source: string | null
+  quotes: { text: string; source: string }[] | null
+  sort_order: number
+  active: boolean
+}
+
 export interface ContentRows {
   settings: SettingsRow
   stops: StopRow[]
   cards: CardRow[]
   questions: QuestionRow[]
   activities: ActivityRow[]
+  restaurants: RestaurantRow[]
 }

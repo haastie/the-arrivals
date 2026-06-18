@@ -3,11 +3,11 @@ import { Card } from '../ui'
 import { MapCanvas } from './MapCanvas'
 import { RestaurantDetail } from './RestaurantDetail'
 import { Phrasebook } from './Phrasebook'
-import { COMMUNITIES, RESTAURANTS } from '../../data/jacksonHeightsMap'
+import { COMMUNITIES, type Restaurant } from '../../data/jacksonHeightsMap'
 
 const allActiveMap = () => Object.fromEntries(COMMUNITIES.map((c) => [c.id, true]))
 
-export function FoodMapView() {
+export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
   const [active, setActive] = useState<Record<string, boolean>>(allActiveMap)
   const [showZones, setShowZones] = useState(true)
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -16,11 +16,11 @@ export function FoodMapView() {
 
   const counts = useMemo(() => {
     const m: Record<string, number> = {}
-    for (const r of RESTAURANTS) m[r.communityId] = (m[r.communityId] ?? 0) + 1
+    for (const r of restaurants) m[r.communityId] = (m[r.communityId] ?? 0) + 1
     return m
-  }, [])
+  }, [restaurants])
 
-  const selected = RESTAURANTS.find((r) => r.id === selectedId) ?? null
+  const selected = restaurants.find((r) => r.id === selectedId) ?? null
   const allOn = COMMUNITIES.every((c) => active[c.id])
 
   function select(id: string) {
@@ -29,10 +29,10 @@ export function FoodMapView() {
   }
 
   function surprise() {
-    const onCommunity = (r: (typeof RESTAURANTS)[number]) => active[r.communityId]
-    let pool = RESTAURANTS.filter((r) => onCommunity(r) && !viewed.includes(r.id) && r.id !== selectedId)
-    if (!pool.length) pool = RESTAURANTS.filter((r) => onCommunity(r) && r.id !== selectedId)
-    if (!pool.length) pool = RESTAURANTS.filter(onCommunity)
+    const onCommunity = (r: Restaurant) => active[r.communityId]
+    let pool = restaurants.filter((r) => onCommunity(r) && !viewed.includes(r.id) && r.id !== selectedId)
+    if (!pool.length) pool = restaurants.filter((r) => onCommunity(r) && r.id !== selectedId)
+    if (!pool.length) pool = restaurants.filter(onCommunity)
     if (!pool.length) return
     select(pool[Math.floor(Math.random() * pool.length)].id)
   }
@@ -114,7 +114,7 @@ export function FoodMapView() {
       </Card>
 
       <MapCanvas
-        restaurants={RESTAURANTS}
+        restaurants={restaurants}
         active={active}
         showZones={showZones}
         selectedId={selectedId}

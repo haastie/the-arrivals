@@ -85,6 +85,11 @@ export function EntityForm({
               value={(row[f.key] as string[]) ?? []}
               onChange={(v) => set(f.key, v)}
             />
+          ) : f.type === 'quotes' ? (
+            <QuotesEditor
+              value={(row[f.key] as Quote[]) ?? []}
+              onChange={(v) => set(f.key, v)}
+            />
           ) : (
             <input
               type="text"
@@ -108,6 +113,49 @@ export function EntityForm({
         )}
       </div>
     </Card>
+  )
+}
+
+interface Quote {
+  text: string
+  source: string
+}
+
+function QuotesEditor({ value, onChange }: { value: Quote[]; onChange: (v: Quote[]) => void }) {
+  function update(i: number, patch: Partial<Quote>) {
+    const c = value.map((q, j) => (j === i ? { ...q, ...patch } : q))
+    onChange(c)
+  }
+  return (
+    <div className="flex flex-col gap-2">
+      {value.map((q, i) => (
+        <div key={i} className="flex flex-col gap-1 rounded-xl bg-ink/5 p-2">
+          <input
+            value={q.text ?? ''}
+            placeholder="Citaat"
+            onChange={(e) => update(i, { text: e.target.value })}
+            className="rounded-lg bg-ink/5 px-3 py-2 text-sm text-ink outline-none"
+          />
+          <div className="flex gap-1.5">
+            <input
+              value={q.source ?? ''}
+              placeholder="Bron (bv. Yelp-reviewer)"
+              onChange={(e) => update(i, { source: e.target.value })}
+              className="flex-1 rounded-lg bg-ink/5 px-3 py-2 text-xs text-ink outline-none"
+            />
+            <button onClick={() => onChange(value.filter((_, j) => j !== i))} className="px-2 text-rose-mark">
+              ✕
+            </button>
+          </div>
+        </div>
+      ))}
+      <button
+        onClick={() => onChange([...value, { text: '', source: '' }])}
+        className="self-start text-sm text-clay underline"
+      >
+        + citaat
+      </button>
+    </div>
   )
 }
 

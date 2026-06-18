@@ -27,5 +27,9 @@ export const adminUpsertActivity = (secret: string, row: Record<string, unknown>
   rpc('admin_upsert_activity', { p_secret: secret, p_row: row })
 export const adminDeleteActivity = (secret: string, id: string) =>
   rpc('admin_delete_activity', { p_secret: secret, p_id: id })
+export const adminUpsertRestaurant = (secret: string, row: Record<string, unknown>) =>
+  rpc('admin_upsert_restaurant', { p_secret: secret, p_row: row })
+export const adminDeleteRestaurant = (secret: string, id: string) =>
+  rpc('admin_delete_restaurant', { p_secret: secret, p_id: id })
 export const adminUpdateSettings = (secret: string, row: Record<string, unknown>) =>
   rpc('admin_update_settings', { p_secret: secret, p_row: row })
