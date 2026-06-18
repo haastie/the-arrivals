@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { createSession, hostSetPhase } from '../lib/api'
 import {
   loadHostSecret,
@@ -152,6 +152,12 @@ function HostConsole({ sessionId, secret }: { sessionId: string; secret: string 
       </header>
 
       <PhaseSwitcher phase={session.phase} onSet={setPhase} />
+
+      <Link to="/eten" className="mt-3 block">
+        <Button variant="secondary" block>
+          🍽 Eten- & taalkaart openen
+        </Button>
+      </Link>
 
       <main className="mt-4 flex flex-col gap-4">
         <HostJoinPanel session={session} />

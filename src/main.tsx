@@ -10,6 +10,7 @@ import Play from './pages/Play.tsx'
 import Master from './pages/Master.tsx'
 import Warmup from './pages/Warmup.tsx'
 import Admin from './pages/Admin.tsx'
+import FoodMap from './pages/FoodMap.tsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
   { path: '/master', element: <Master /> },
   { path: '/warmup', element: <Warmup /> },
   { path: '/admin', element: <Admin /> },
+  { path: '/eten', element: <FoodMap /> },
   { path: '*', element: <Landing /> },
 ])
 
