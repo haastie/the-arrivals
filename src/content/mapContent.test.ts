@@ -20,8 +20,8 @@ const rows: ContentRows = {
   ],
   activities: [{ id: 'a1', stop_id: 's1', title: 'Act', body: 'AB', sort_order: 0 }],
   restaurants: [
-    { id: 'r1', name: 'Lhasa', community_id: 'himalayan', cuisine: 'Tibetaans', price: '$', address: 'A', x: 31, y: 60, lang_group: 'tibetan', tour: 1, rating: 4.6, rating_count: 89, rating_source: 'Tripadvisor', consensus: 'C', dish: 'Momo', dish_source: 'src', quotes: [{ text: 'q', source: 's' }], sort_order: 1, active: true },
-    { id: 'r2', name: 'Inactief', community_id: 'mexican', cuisine: 'X', price: '$', address: 'B', x: 40, y: 80, lang_group: 'spanish', tour: 2, rating: 4, rating_count: 1, rating_source: 'G', consensus: 'C', dish: 'D', dish_source: 's', quotes: [], sort_order: 0, active: false },
+    { id: 'r1', name: 'Lhasa', community_id: 'himalayan', cuisine: 'Tibetaans', price: '$', address: 'A', x: 31, y: 60, lat: null, lng: null, lang_group: 'tibetan', tour: 1, rating: 4.6, rating_count: 89, rating_source: 'Tripadvisor', consensus: 'C', dish: 'Momo', dish_source: 'src', quotes: [{ text: 'q', source: 's' }], yelp_id: null, source: 'manual', sort_order: 1, active: true },
+    { id: 'r2', name: 'Inactief', community_id: 'mexican', cuisine: 'X', price: '$', address: 'B', x: 40, y: 80, lat: null, lng: null, lang_group: 'spanish', tour: 2, rating: 4, rating_count: 1, rating_source: 'G', consensus: 'C', dish: 'D', dish_source: 's', quotes: [], yelp_id: null, source: 'manual', sort_order: 0, active: false },
   ],
 }
 

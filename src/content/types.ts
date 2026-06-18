@@ -150,6 +150,8 @@ export interface RestaurantRow {
   address: string | null
   x: number
   y: number
+  lat: number | null
+  lng: number | null
   lang_group: string | null
   tour: number | null
   rating: number | null
@@ -159,6 +161,8 @@ export interface RestaurantRow {
   dish: string | null
   dish_source: string | null
   quotes: { text: string; source: string }[] | null
+  yelp_id: string | null
+  source: string | null
   sort_order: number
   active: boolean
 }

@@ -29,9 +29,12 @@ export interface Restaurant {
   cuisine: string
   price: string
   address: string
-  /** Positie op de gestileerde kaart (0-100%). */
+  /** Positie op de gestileerde kaart (0-100%) - fallback als lat/lng ontbreekt. */
   x: number
   y: number
+  /** Echte coördinaten (gescrapet); anders afgeleid uit x/y. */
+  lat?: number
+  lng?: number
   langGroup: string
   tour: number
   rating: number
@@ -178,6 +181,26 @@ export const PHRASE_GROUPS: PhraseGroup[] = [
     ],
   },
 ]
+
+/**
+ * Zet een gestileerde x/y (0-100) om naar een ruwe lat/lng binnen Jackson
+ * Heights. Alleen voor de start-seeds zonder echte coördinaten; gescrapete
+ * restaurants hebben echte lat/lng.
+ */
+export function xyToLatLng(x: number, y: number): [number, number] {
+  const lng = -73.8916 + (x - 30) * 0.000385
+  const lat = 40.7556 + (y - 16) * -0.0001452
+  return [lat, lng]
+}
+
+/** Beste beschikbare coördinaten: echte lat/lng, anders afgeleid uit x/y. */
+export function restaurantLatLng(r: Restaurant): [number, number] {
+  if (typeof r.lat === 'number' && typeof r.lng === 'number') return [r.lat, r.lng]
+  return xyToLatLng(r.x, r.y)
+}
+
+/** Middelpunt van Jackson Heights (kaart-default). */
+export const JH_CENTER: [number, number] = [40.7488, -73.8839]
 
 export const communityById = Object.fromEntries(COMMUNITIES.map((c) => [c.id, c]))
 export const phraseGroupById = Object.fromEntries(PHRASE_GROUPS.map((g) => [g.id, g]))

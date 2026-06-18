@@ -304,6 +304,8 @@ function dbRestaurant(r: Restaurant): Row {
     address: r.address,
     x: r.x,
     y: r.y,
+    lat: r.lat ?? '',
+    lng: r.lng ?? '',
     rating: r.rating,
     rating_count: r.ratingCount,
     rating_source: r.ratingSource,

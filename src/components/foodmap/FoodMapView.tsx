@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Card } from '../ui'
-import { MapCanvas } from './MapCanvas'
+import { MapView } from './MapView'
 import { RestaurantDetail } from './RestaurantDetail'
 import { Phrasebook } from './Phrasebook'
 import { COMMUNITIES, type Restaurant } from '../../data/jacksonHeightsMap'
@@ -9,7 +9,6 @@ const allActiveMap = () => Object.fromEntries(COMMUNITIES.map((c) => [c.id, true
 
 export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
   const [active, setActive] = useState<Record<string, boolean>>(allActiveMap)
-  const [showZones, setShowZones] = useState(true)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [viewed, setViewed] = useState<string[]>([])
   const [phraseId, setPhraseId] = useState('hindi')
@@ -82,25 +81,6 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
           })}
         </div>
 
-        <div className="flex items-center justify-between border-t border-ink/10 pt-3">
-          <div>
-            <p className="text-[11px] font-bold tracking-wide text-ink uppercase">Buurtzones</p>
-            <p className="text-[10px] text-ink/55">Waar elke gemeenschap zich clustert</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowZones((z) => !z)}
-            aria-pressed={showZones}
-            className={`relative h-6 w-11 rounded-full transition ${showZones ? 'bg-clay' : 'bg-ink/20'}`}
-          >
-            <span
-              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${
-                showZones ? 'left-[22px]' : 'left-0.5'
-              }`}
-            />
-          </button>
-        </div>
-
         <button
           type="button"
           onClick={surprise}
@@ -113,14 +93,7 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
         </button>
       </Card>
 
-      <MapCanvas
-        restaurants={restaurants}
-        active={active}
-        showZones={showZones}
-        selectedId={selectedId}
-        viewed={viewed}
-        onSelect={select}
-      />
+      <MapView restaurants={restaurants} active={active} selectedId={selectedId} onSelect={select} />
 
       {selected ? (
         <RestaurantDetail restaurant={selected} onBack={() => setSelectedId(null)} />
