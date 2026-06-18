@@ -10,7 +10,7 @@
  *      `consensus`, `dish` en 2 `quotes` (in het Nederlands).
  *   4. Upsert in Supabase (service-role) op id = "yelp-<businessId>".
  *
- * ENV (zet in je shell of .env, NIET committen):
+ * ENV (in .env.local in de projectroot - wordt automatisch ingeladen - of in je shell):
  *   YELP_API_KEY                 - https://www.yelp.com/developers (gratis)
  *   ANTHROPIC_API_KEY            - voor de verrijking (sla over met --no-enrich)
  *   SUPABASE_URL                 - bv. https://lsagvpllpdouwwjmiwrz.supabase.co
@@ -25,8 +25,32 @@
  *
  * Vereist Node 18+ (global fetch). Draai eerst migraties 0008 + 0009.
  */
-import { writeFileSync } from 'node:fs'
+import { writeFileSync, readFileSync, existsSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
 import { createClient } from '@supabase/supabase-js'
+
+// .env.local / .env inladen (Node leest die niet vanzelf, Vite wel).
+function loadEnvFiles() {
+  const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+  for (const name of ['.env.local', '.env']) {
+    const path = join(root, name)
+    if (!existsSync(path)) continue
+    for (const line of readFileSync(path, 'utf8').split('\n')) {
+      const t = line.trim()
+      if (!t || t.startsWith('#')) continue
+      const eq = t.indexOf('=')
+      if (eq < 0) continue
+      const key = t.slice(0, eq).trim()
+      let v = t.slice(eq + 1).trim()
+      if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+        v = v.slice(1, -1)
+      }
+      if (process.env[key] === undefined) process.env[key] = v
+    }
+  }
+}
+loadEnvFiles()
 
 // ---- args & env ------------------------------------------------------------
 const args = process.argv.slice(2)
