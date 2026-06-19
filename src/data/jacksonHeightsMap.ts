@@ -210,3 +210,26 @@ export function restaurantPhrase(r: Restaurant): { group: PhraseGroup; phrase: P
   const group = phraseGroupById[r.langGroup] ?? PHRASE_GROUPS[0]
   return { group, phrase: group.phrases[0] }
 }
+
+/**
+ * Probeert het aanbevolen gerecht te koppelen aan een gerecht in de taalgids,
+ * zodat je het in de taal van de zaak kunt zien én horen. Matcht het (Dutch)
+ * dish-veld op de native/roman/en-naam van een gerecht in de juiste taalgroep.
+ * Geeft null als er geen betrouwbare match is.
+ */
+export function dishPhrase(r: Restaurant): { group: PhraseGroup; food: Phrase } | null {
+  const group = phraseGroupById[r.langGroup]
+  if (!group) return null
+  const dish = r.dish.toLowerCase()
+  const food = group.foods.find((f) => {
+    const native = f.native.toLowerCase()
+    const roman = f.roman.toLowerCase()
+    const en = f.en.toLowerCase()
+    return (
+      (native.length > 2 && dish.includes(native)) ||
+      (roman.length > 2 && dish.includes(roman)) ||
+      (en.length > 3 && dish.includes(en))
+    )
+  })
+  return food ? { group, food } : null
+}

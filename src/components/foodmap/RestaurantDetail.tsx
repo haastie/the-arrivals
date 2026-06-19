@@ -2,32 +2,20 @@ import { Card } from '../ui'
 import { SpeakButton } from './SpeakButton'
 import {
   communityById,
+  dishPhrase,
   restaurantPhrase,
   type Restaurant,
 } from '../../data/jacksonHeightsMap'
 
 /** Detailkaart van een geselecteerd restaurant. */
-export function RestaurantDetail({
-  restaurant,
-  onBack,
-}: {
-  restaurant: Restaurant
-  onBack: () => void
-}) {
+export function RestaurantDetail({ restaurant }: { restaurant: Restaurant }) {
   const c = communityById[restaurant.communityId]
   const { group, phrase } = restaurantPhrase(restaurant)
   const speakText = group.roman ? phrase.roman : phrase.native
+  const dp = dishPhrase(restaurant)
 
   return (
     <Card className="flex flex-col gap-4">
-      <button
-        type="button"
-        onClick={onBack}
-        className="flex items-center gap-1.5 self-start font-mono text-[11px] tracking-[0.06em] text-ink/50 uppercase"
-      >
-        ← Terug naar taalgids
-      </button>
-
       <div>
         <span
           className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-[0.06em] uppercase"
@@ -83,6 +71,23 @@ export function RestaurantDetail({
           <span className="font-display text-lg leading-snug text-ink">{restaurant.dish}</span>
         </div>
         <p className="mt-1 text-xs text-ink/45">via {restaurant.dishSource}</p>
+
+        {dp && (
+          <div className="mt-3 flex items-center gap-3 rounded-xl border border-ink/10 bg-paper px-3 py-2.5">
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] text-ink/55">Zo bestel je het · {dp.group.label}</p>
+              <p className="text-lg leading-tight font-bold text-ink">{dp.food.native}</p>
+              <p className="text-xs text-ink/55 italic">
+                {dp.food.roman} · {dp.food.en.toLowerCase()}
+              </p>
+            </div>
+            <SpeakButton
+              text={dp.group.roman ? dp.food.roman : dp.food.native}
+              lang={dp.group.ttsLang}
+              size={44}
+            />
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-ink/15 px-4 py-3">
