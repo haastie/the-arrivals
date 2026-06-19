@@ -72,6 +72,8 @@ export const COMMUNITIES: Community[] = [
   { id: 'mexican', label: 'Mexicaans', sub: 'Taquerías & cantinas', color: '#1E8A5B' },
   { id: 'ecuadorian', label: 'Ecuadoriaans', sub: 'Kust- & sierrakeuken', color: '#2563C9' },
   { id: 'lgbtq', label: 'LGBTQ+ erfgoed', sub: 'Bakermat van Queens Pride', color: '#D6336C' },
+  { id: 'east_asian', label: 'Oost-Aziatisch', sub: 'Chinees · Thais · Japans · Koreaans', color: '#7C3AED' },
+  { id: 'latin_other', label: 'Latijns (overig)', sub: 'Peruaans · Venezolaans · Argentijns', color: '#0D9488' },
   { id: 'other', label: 'Overig', sub: 'Amerikaans & internationaal', color: '#64748B' },
 ]
 

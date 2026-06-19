@@ -157,7 +157,10 @@ function latLngToXY(lat, lng) {
 const clamp = (n) => Math.max(0, Math.min(100, Math.round(n * 10) / 10))
 
 // ---- categorie -> community + taal (heuristiek) ----------------------------
-const COMMUNITIES = ['south_asian', 'himalayan', 'colombian', 'mexican', 'ecuadorian', 'lgbtq', 'other']
+const COMMUNITIES = [
+  'south_asian', 'himalayan', 'colombian', 'mexican', 'ecuadorian', 'lgbtq',
+  'east_asian', 'latin_other', 'other',
+]
 const LANGS = ['hindi', 'bengali', 'nepali', 'tibetan', 'spanish']
 
 // Yelp-categorieën die GEEN eetgelegenheid zijn (supermarkten, slagers, winkels).
@@ -189,18 +192,37 @@ function venueKind(aliases) {
   return 'restaurant'
 }
 
+// Matcht op Yelp-aliassen ÉN op woorden in de naam (veel Latijnse bakkerijen/
+// cafés dragen alleen 'bakeries'/'coffee', maar hebben het land in de naam).
+// Focus-gemeenschappen krijgen voorrang; daarna de bredere groepen. Claude
+// verfijnt dit normaal nog (bv. Tibetaans vs Nepalees binnen 'himalayan').
 function classify(aliases, title) {
-  const a = aliases.join(' ') + ' ' + title.toLowerCase()
-  const hit = (...keys) => keys.some((k) => a.includes(k))
-  if (hit('tibetan')) return { community: 'himalayan', lang: 'tibetan' }
-  if (hit('nepalese', 'himalayan', 'newari', 'sherpa')) return { community: 'himalayan', lang: 'nepali' }
-  if (hit('bangladeshi')) return { community: 'south_asian', lang: 'bengali' }
-  if (hit('indpak', 'indian', 'pakistani', 'gujarati', 'punjabi', 'hyderabad')) return { community: 'south_asian', lang: 'hindi' }
-  if (hit('colombian')) return { community: 'colombian', lang: 'spanish' }
-  if (hit('ecuadorian')) return { community: 'ecuadorian', lang: 'spanish' }
-  if (hit('mexican', 'tacos', 'pueblan')) return { community: 'mexican', lang: 'spanish' }
-  if (hit('gaybars', 'gay_bars')) return { community: 'lgbtq', lang: 'spanish' }
-  if (hit('latin', 'venezuelan', 'peruvian', 'argentine', 'dominican', 'cuban', 'spanish')) return { community: 'colombian', lang: 'spanish' }
+  const hay = (aliases.join(' ') + ' ' + title).toLowerCase()
+  const hit = (...keys) => keys.some((k) => hay.includes(k))
+
+  // --- focus-gemeenschappen ---
+  if (hit('himalayan', 'nepal', 'tibet', 'sherpa', 'newari', 'thakali', 'momo', 'lhasa', 'phayul')) {
+    return { community: 'himalayan', lang: hit('tibet', 'lhasa') ? 'tibetan' : 'nepali' }
+  }
+  if (hit('bangladeshi', 'bangla', 'bengal')) return { community: 'south_asian', lang: 'bengali' }
+  if (hit('indpak', 'indian', 'pakistan', 'punjab', 'gujarat', 'hyderabad', 'desi', 'biryani', 'tandoor'))
+    return { community: 'south_asian', lang: 'hindi' }
+  if (hit('mexic', 'taqueria', 'tacos', 'poblano', 'pueblan', 'puebla', 'oaxac', 'tex-mex'))
+    return { community: 'mexican', lang: 'spanish' }
+  if (hit('colombia', 'paisa', 'bogota')) return { community: 'colombian', lang: 'spanish' }
+  if (hit('ecuador', 'cuencan', 'manab', 'quito', 'guayaqui', 'encebollado'))
+    return { community: 'ecuadorian', lang: 'spanish' }
+  if (hit('gaybars', 'gay_bars')) return { community: 'lgbtq', lang: null }
+
+  // --- bredere groepen ---
+  if (hit('chinese', 'thai', 'japanese', 'korean', 'filipino', 'vietnam', 'malaysian', 'burmese',
+          'indonesian', 'asianfusion', 'sushi', 'ramen', 'hotpot', 'cantonese', 'szechuan', 'dimsum',
+          'taiwanese', 'noodles', 'izakaya'))
+    return { community: 'east_asian', lang: null }
+  if (hit('peruvian', 'venezuelan', 'argentine', 'brazilian', 'salvadoran', 'dominican', 'cuban',
+          'chilean', 'bolivian', 'latin'))
+    return { community: 'latin_other', lang: 'spanish' }
+
   return { community: null, lang: null }
 }
 
@@ -273,10 +295,12 @@ Reviews:
 ${reviews.map((r, i) => `${i + 1}. ${r}`).join('\n') || '(geen)'}
 
 Kies community_id uit: ${COMMUNITIES.join(', ')}.
-- Gebruik 'lgbtq' UITSLUITEND voor expliciet queer/gay bars of clubs (drag, Pride, gay nightlife). Een gewone Amerikaanse, Aziatische of Latijnse zaak is NOOIT 'lgbtq'.
-- Gebruik 'other' voor zaken die niet bij een specifieke gemeenschap horen (bv. Amerikaans, Chinees, Thais, fastfood, koffie).
-- Kies alleen south_asian/himalayan/colombian/mexican/ecuadorian als de keuken daar duidelijk bij hoort.
-Kies lang_group uit: ${LANGS.join(', ')} (de taal die je in de zaak hoort).
+- 'lgbtq' UITSLUITEND voor expliciet queer/gay bars of clubs (drag, Pride, gay nightlife). Een gewone zaak is NOOIT 'lgbtq'.
+- 'south_asian' (Indiaas/Pakistaans/Bengaals), 'himalayan' (Nepalees/Tibetaans), 'colombian', 'mexican', 'ecuadorian': alleen als de keuken daar duidelijk bij hoort.
+- 'east_asian' voor Chinees/Thais/Japans/Koreaans/Filipijns/Vietnamees e.d.
+- 'latin_other' voor Latijns-Amerikaans dat NIET Colombiaans/Mexicaans/Ecuadoriaans is (Peruaans, Venezolaans, Argentijns, Braziliaans, Salvadoraans...).
+- 'other' voor de rest (Amerikaans, fastfood, Midden-Oosters, koffie/bakkerij zonder duidelijke herkomst).
+Kies lang_group uit: ${LANGS.join(', ')} (de taal die je in de zaak hoort; laat leeg/onbekend als geen van deze past).
 Geef ALLEEN dit JSON-object terug (Nederlands, geen markdown):
 {"community_id":"...","lang_group":"...","consensus":"1-2 zinnen","dish":"aanbevolen gerecht","quotes":[{"text":"kort citaat","source":"Yelp-reviewer"}]}`
 
