@@ -155,11 +155,14 @@ const COMMUNITIES = ['south_asian', 'himalayan', 'colombian', 'mexican', 'ecuado
 const LANGS = ['hindi', 'bengali', 'nepali', 'tibetan', 'spanish']
 
 // Yelp-categorieën die GEEN eetgelegenheid zijn (supermarkten, slagers, winkels).
+// LET OP: dit zijn winkel-aliassen, GEEN eet-aliassen. foodtrucks/streetvendors/
+// bakeries/desserts/coffee enz. horen hier bewust NIET in - dat zijn eetplekken.
 const GROCERY_ALIASES = [
   'grocery', 'intlgrocery', 'internationalgrocery', 'ethnicgrocery', 'convenience', 'markets',
   'farmersmarket', 'butcher', 'seafoodmarkets', 'meats', 'organic_stores', 'healthmarkets',
-  'wholesale_stores', 'drugstores', 'herbsandspices', 'cheese', 'beer_and_wine', 'beverage_stores',
-  'spiritstores', 'wineries', 'importedfood', 'tobaccoshops', 'cards', 'pharmacy',
+  'wholesale_stores', 'drugstores', 'pharmacy', 'herbsandspices', 'cheese', 'beer_and_wine',
+  'beverage_stores', 'spiritstores', 'wineries', 'importedfood', 'tobaccoshops', 'cards',
+  'gourmet', 'candystores', 'chocolate', 'coffeeroasteries', 'waterstores', 'tea',
 ]
 // Categorieën die op nachtleven duiden (bars/clubs).
 const NIGHTLIFE_ALIASES = [
@@ -169,12 +172,14 @@ const NIGHTLIFE_ALIASES = [
 // Alleen deze duiden expliciet op een queer venue.
 const QUEER_ALIASES = ['gaybars', 'gay_bars']
 
-// Bepaalt het type zaak. 'restaurants' in de aliassen wint altijd (dan is het
-// een eetgelegenheid, ook als er een winkel-alias bij staat).
+// Bepaalt het type zaak. Yelp geeft alleen leaf-categorieën (bv. 'mexican',
+// niet 'restaurants'), dus we kijken naar het GEHEEL: pas 'grocery'/'nightlife'
+// als ÁLLE categorieën winkel- resp. nachtleven-aliassen zijn. Zo blijft een
+// zaak met een echte keuken (bv. 'mexican' + 'grocery') gewoon een restaurant.
 function venueKind(aliases) {
-  const isEatery = aliases.includes('restaurants')
-  if (!isEatery && aliases.some((a) => GROCERY_ALIASES.includes(a))) return 'grocery'
-  if (!isEatery && aliases.some((a) => NIGHTLIFE_ALIASES.includes(a))) return 'nightlife'
+  if (!aliases.length) return 'restaurant'
+  if (aliases.every((a) => GROCERY_ALIASES.includes(a))) return 'grocery'
+  if (aliases.every((a) => NIGHTLIFE_ALIASES.includes(a))) return 'nightlife'
   return 'restaurant'
 }
 
