@@ -264,19 +264,28 @@ export function restaurantPhrase(r: Restaurant): { group: PhraseGroup; phrase: P
  * dish-veld op de native/roman/en-naam van een gerecht in de juiste taalgroep.
  * Geeft null als er geen betrouwbare match is.
  */
+// Te generieke woorden negeren we bij woord-matching (anders matcht 'Chicken
+// biryani' ook op 'Tandoori chicken' e.d.).
+const DISH_GENERIC_WORDS = new Set([
+  'chicken', 'kip', 'rice', 'rijst', 'fish', 'vis', 'meat', 'vlees', 'soup', 'soep',
+  'noodle', 'noodles', 'noedels', 'curry', 'dish', 'set',
+])
 export function dishPhrase(r: Restaurant): { group: PhraseGroup; food: Phrase } | null {
   const group = r.langGroup ? phraseGroupById[r.langGroup] : undefined
   if (!group) return null
   const dish = r.dish.toLowerCase()
-  const food = group.foods.find((f) => {
-    const native = f.native.toLowerCase()
-    const roman = f.roman.toLowerCase()
-    const en = f.en.toLowerCase()
-    return (
-      (native.length > 2 && dish.includes(native)) ||
-      (roman.length > 2 && dish.includes(roman)) ||
-      (en.length > 3 && dish.includes(en))
-    )
-  })
+  const dishWords = dish.split(/[^a-zà-ÿ]+/).filter((w) => w.length > 3)
+  // Een term matcht als de hele uitdrukking erin staat, of als een betekenisvol
+  // (niet-generiek) woord van 4+ letters overlapt - zo vangen we ook hyphens,
+  // meervouden en omgekeerde woordvolgorde.
+  const matches = (term: string) => {
+    const t = term.toLowerCase()
+    if (t.length > 2 && dish.includes(t)) return true
+    return t
+      .split(/[^a-zà-ÿ]+/)
+      .filter((w) => w.length > 3 && !DISH_GENERIC_WORDS.has(w))
+      .some((w) => dishWords.some((d) => d === w || d.includes(w) || w.includes(d)))
+  }
+  const food = group.foods.find((f) => matches(f.native) || matches(f.roman) || matches(f.en))
   return food ? { group, food } : null
 }

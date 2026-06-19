@@ -92,19 +92,26 @@ export function RestaurantDetail({ restaurant }: { restaurant: Restaurant }) {
       {lang && (
         <div className="rounded-2xl border border-ink/15 px-4 py-3">
           <p className="text-[10px] font-bold tracking-[0.12em] text-ink/45 uppercase">
-            Dit hoor je hier · {lang.group.label}
+            Zo bestel je hier · {lang.group.label}
           </p>
-          <div className="mt-2 flex items-center gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs text-ink/55">Zeg eens — {lang.phrase.en}</p>
-              <p className="text-lg leading-tight font-bold text-ink">{lang.phrase.native}</p>
-              <p className="text-xs text-ink/55 italic">{lang.phrase.roman}</p>
-            </div>
-            <SpeakButton
-              text={lang.group.roman ? lang.phrase.roman : lang.phrase.native}
-              lang={lang.group.ttsLang}
-              size={40}
-            />
+          <div className="mt-2 flex flex-col gap-2">
+            {lang.group.phrases.map((ph) => (
+              <div
+                key={ph.en}
+                className="flex items-center gap-3 rounded-xl border border-ink/10 bg-ink/5 px-3 py-2"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] text-ink/55">{ph.en}</p>
+                  <p className="text-base leading-tight font-bold text-ink">{ph.native}</p>
+                  <p className="text-xs text-ink/55 italic">{ph.roman}</p>
+                </div>
+                <SpeakButton
+                  text={lang.group.roman ? ph.roman : ph.native}
+                  lang={lang.group.ttsLang}
+                  size={36}
+                />
+              </div>
+            ))}
           </div>
         </div>
       )}
