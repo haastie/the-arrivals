@@ -32,6 +32,14 @@ describe('dishPhrase', () => {
     const dp = dishPhrase(base)
     expect(dp?.food.roman.toLowerCase()).toContain('biryani')
   })
+  it('matcht ook bij omgekeerde woordvolgorde (Spaans)', () => {
+    const dp = dishPhrase({ ...base, langGroup: 'spanish', dish: 'Brasa pollo especial' })
+    expect(dp?.food.native).toBe('Pollo a la brasa')
+  })
+  it('geen valse match op een generiek woord (kip)', () => {
+    const dp = dishPhrase({ ...base, langGroup: 'spanish', dish: 'Gegrilde kip' })
+    expect(dp).toBeNull()
+  })
   it('geeft null als de zaak geen taalgroep heeft', () => {
     expect(dishPhrase({ ...base, langGroup: null })).toBeNull()
   })
