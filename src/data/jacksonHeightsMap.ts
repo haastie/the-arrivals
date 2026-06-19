@@ -223,7 +223,7 @@ export function restaurantPhrase(r: Restaurant): { group: PhraseGroup; phrase: P
  * Geeft null als er geen betrouwbare match is.
  */
 export function dishPhrase(r: Restaurant): { group: PhraseGroup; food: Phrase } | null {
-  const group = phraseGroupById[r.langGroup]
+  const group = r.langGroup ? phraseGroupById[r.langGroup] : undefined
   if (!group) return null
   const dish = r.dish.toLowerCase()
   const food = group.foods.find((f) => {
