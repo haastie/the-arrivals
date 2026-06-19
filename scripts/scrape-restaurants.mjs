@@ -391,11 +391,11 @@ function tokenizeDish(dish) {
     .filter((t) => t.length > 2 && !DISH_STOPWORDS.has(t))
 }
 const FOOD_TOKENS = {
-  hindi: ['dosa', 'samosa', 'biryani', 'chaat', 'thali'],
-  bengali: ['macher', 'jhol', 'ilish', 'mishti', 'biryani'],
+  hindi: ['dosa', 'samosa', 'biryani', 'chaat', 'thali', 'tandoori', 'kebab', 'kabab', 'gulab', 'jamun'],
+  bengali: ['macher', 'jhol', 'ilish', 'mishti', 'biryani', 'phuchka', 'fuchka', 'fuska', 'golgappa'],
   nepali: ['momo', 'thukpa', 'sel', 'roti', 'khana'],
   tibetan: ['momo', 'thukpa', 'tingmo'],
-  spanish: ['arepa', 'bandeja', 'paisa', 'birria', 'taco', 'hornado', 'encebollado', 'empanada'],
+  spanish: ['arepa', 'bandeja', 'paisa', 'birria', 'taco', 'hornado', 'encebollado', 'empanada', 'ceviche', 'pollo', 'brasa'],
   mandarin: ['jiaozi', 'dumpling', 'miantiao', 'noodle', 'chaofan', 'rice', 'dimsum', 'huoguo'],
 }
 async function dishCoverageReport() {
