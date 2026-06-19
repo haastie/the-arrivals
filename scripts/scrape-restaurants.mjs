@@ -4,7 +4,10 @@
  * Heights via de Yelp Fusion API, verrijkt met Claude, en schrijft naar Supabase.
  *
  * PIJPLIJN
- *   1. Yelp business search binnen de JH-bounding-box (gepagineerd, ontdubbeld).
+ *   1. Yelp business search per TEGEL (klein zoekgebied). Yelp staat max 240
+ *      resultaten per zoekopdracht toe (limit+offset <= 240), dus we dekken JH
+ *      met een raster van overlappende tegels, genummerd vanaf het hart van de
+ *      buurt (37th Ave & 81st St) naar buiten. Resultaten worden ontdubbeld.
  *   2. Heuristische classificatie: Yelp-categorie -> community + taalgroep.
  *   3. Claude-verrijking (optioneel): leest reviews en schrijft community/taal,
  *      `consensus`, `dish` en 2 `quotes` (in het Nederlands).
@@ -17,11 +20,18 @@
  *   SUPABASE_SERVICE_ROLE_KEY    - service role (omzeilt RLS) - geheim!
  *
  * GEBRUIK
- *   node scripts/scrape-restaurants.mjs                 # volledige run -> Supabase
- *   node scripts/scrape-restaurants.mjs --limit 60      # eerste 60 (test)
+ *   node scripts/scrape-restaurants.mjs --list-tiles    # toon het tegelraster
+ *   node scripts/scrape-restaurants.mjs --tile 1        # alleen tegel 1 (centrum)
+ *   node scripts/scrape-restaurants.mjs --tile 1-6      # tegels 1 t/m 6
+ *   node scripts/scrape-restaurants.mjs                 # alle tegels -> Supabase
  *   node scripts/scrape-restaurants.mjs --no-enrich     # zonder Claude
  *   node scripts/scrape-restaurants.mjs --dry-run       # schrijf SQL i.p.v. DB
  *   node scripts/scrape-restaurants.mjs --model claude-haiku-4-5-20251001
+ *
+ * Tegels zijn genummerd vanaf het centrum (37th Ave & 81st St) naar buiten:
+ * lage nummers = hart van Jackson Heights, hoge nummers = de randen. Draai een
+ * paar lage nummers eerst en breid uit. Ontdubbeling via id = "yelp-<id>" zorgt
+ * dat overlappende tegels elkaar niet dubbel opslaan.
  *
  * Vereist Node 18+ (global fetch). Draai eerst migraties 0008 + 0009.
  */
@@ -61,8 +71,10 @@ const val = (f, d) => {
 }
 const DRY = has('--dry-run')
 const ENRICH = !has('--no-enrich')
-const LIMIT = Number(val('--limit', '1000'))
+const LIMIT = Number(val('--limit', '2000'))
 const MODEL = val('--model', 'claude-haiku-4-5-20251001')
+const LIST_TILES = has('--list-tiles')
+const TILE_ARG = val('--tile', null) // "1", "1-6" of leeg = alle tegels
 
 const { YELP_API_KEY, ANTHROPIC_API_KEY } = process.env
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
@@ -82,6 +94,51 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const JH = { lat: 40.7488, lng: -73.8839, bbox: { minLat: 40.743, maxLat: 40.761, minLng: -73.918, maxLng: -73.872 } }
 const inBox = (la, ln) =>
   la >= JH.bbox.minLat && la <= JH.bbox.maxLat && ln >= JH.bbox.minLng && ln <= JH.bbox.maxLng
+
+// ---- tegelraster -----------------------------------------------------------
+// Yelp geeft max 240 resultaten per zoekopdracht (limit+offset <= 240). Daarom
+// dekken we de buurt met overlappende tegels met een kleine zoekradius. Het
+// raster is verankerd op het hart van Jackson Heights (37th Ave & 81st St) en
+// genummerd vanaf het centrum naar buiten.
+const CENTER = { lat: 40.7489, lng: -73.8853 } // 37th Ave & 81st St
+const TILE_RADIUS = 500 // meter (zoekradius per tegel)
+const LAT_STEP = 0.005 // ~555 m
+const LNG_STEP = 0.0065 // ~550 m op deze breedtegraad
+
+function buildTiles() {
+  const pts = []
+  const latSpan = Math.ceil((JH.bbox.maxLat - JH.bbox.minLat) / LAT_STEP) + 1
+  const lngSpan = Math.ceil((JH.bbox.maxLng - JH.bbox.minLng) / LNG_STEP) + 1
+  for (let i = -latSpan; i <= latSpan; i++) {
+    for (let j = -lngSpan; j <= lngSpan; j++) {
+      const lat = CENTER.lat + i * LAT_STEP
+      const lng = CENTER.lng + j * LNG_STEP
+      // houd tegelcentra binnen (net iets ruimer dan) de bbox
+      if (lat < JH.bbox.minLat - LAT_STEP / 2 || lat > JH.bbox.maxLat + LAT_STEP / 2) continue
+      if (lng < JH.bbox.minLng - LNG_STEP / 2 || lng > JH.bbox.maxLng + LNG_STEP / 2) continue
+      pts.push({ lat: +lat.toFixed(5), lng: +lng.toFixed(5) })
+    }
+  }
+  // sorteer op afstand tot het centrum (breedtegraad-gecorrigeerd)
+  const cos = Math.cos((CENTER.lat * Math.PI) / 180)
+  const dist2 = (p) => {
+    const dl = p.lat - CENTER.lat
+    const dn = (p.lng - CENTER.lng) * cos
+    return dl * dl + dn * dn
+  }
+  pts.sort((a, b) => dist2(a) - dist2(b))
+  return pts.map((p, idx) => ({ n: idx + 1, ...p }))
+}
+
+// "3" -> [3]; "1-6" -> [1..6]; leeg -> alle
+function selectTiles(tiles) {
+  if (!TILE_ARG) return tiles
+  const m = String(TILE_ARG).match(/^(\d+)(?:-(\d+))?$/)
+  if (!m) fail(`Ongeldige --tile waarde: ${TILE_ARG} (gebruik bv. 3 of 1-6).`)
+  const from = Number(m[1])
+  const to = m[2] ? Number(m[2]) : from
+  return tiles.filter((t) => t.n >= from && t.n <= to)
+}
 
 // Spiegelt src/data/jacksonHeightsMap.ts (xyToLatLng) zodat de fallback-x/y klopt.
 function latLngToXY(lat, lng) {
@@ -119,17 +176,19 @@ async function yelp(path, params) {
   return res.json()
 }
 
-async function discover() {
-  const seen = new Map()
-  for (let offset = 0; offset < 1000 && seen.size < LIMIT; offset += 50) {
+// Eén tegel uitlezen. Binnen één tegel paginerend tot offset 200 (limit 40 ->
+// 240 totaal, precies de Yelp-limiet). Met de kleine radius is dat ruim genoeg.
+async function discoverTile(tile, seen) {
+  let added = 0
+  for (let offset = 0; offset <= 200 && seen.size < LIMIT; offset += 40) {
     let data
     try {
       data = await yelp('/businesses/search', {
-        latitude: JH.lat, longitude: JH.lng, radius: 1400,
-        categories: 'restaurants,food,bars', limit: 50, offset, sort_by: 'review_count',
+        latitude: tile.lat, longitude: tile.lng, radius: TILE_RADIUS,
+        categories: 'restaurants,food,bars', limit: 40, offset, sort_by: 'distance',
       })
     } catch (e) {
-      console.warn('  zoek-pagina overslaan (offset ' + offset + '): ' + e.message)
+      console.warn(`  tegel ${tile.n} pagina overslaan (offset ${offset}): ${e.message}`)
       break
     }
     const list = data.businesses || []
@@ -137,9 +196,23 @@ async function discover() {
     for (const b of list) {
       const la = b.coordinates?.latitude, ln = b.coordinates?.longitude
       if (la == null || ln == null || !inBox(la, ln) || b.is_closed) continue
-      if (!seen.has(b.id)) seen.set(b.id, b)
+      if (!seen.has(b.id)) {
+        seen.set(b.id, b)
+        added++
+      }
     }
+    if (list.length < 40) break // laatste pagina van deze tegel
     await sleep(120)
+  }
+  return added
+}
+
+async function discover(tiles) {
+  const seen = new Map()
+  for (const tile of tiles) {
+    if (seen.size >= LIMIT) break
+    const added = await discoverTile(tile, seen)
+    console.log(`  tegel ${tile.n} (${tile.lat}, ${tile.lng}): +${added} nieuw (totaal ${seen.size})`)
   }
   return [...seen.values()].slice(0, LIMIT)
 }
@@ -224,9 +297,23 @@ function toRow(b, cls, i) {
 }
 
 async function main() {
-  console.log('Yelp: zoeken in Jackson Heights…')
-  const businesses = await discover()
-  console.log(`Gevonden: ${businesses.length} zaken binnen de JH-box.`)
+  const tiles = buildTiles()
+
+  if (LIST_TILES) {
+    console.log(`Tegelraster (${tiles.length} tegels, radius ${TILE_RADIUS} m, centrum 37th Ave & 81st St):`)
+    for (const t of tiles) {
+      const km = (Math.hypot((t.lat - CENTER.lat) * 111, (t.lng - CENTER.lng) * 84)).toFixed(2)
+      console.log(`  ${String(t.n).padStart(3)}  lat ${t.lat}  lng ${t.lng}  (~${km} km vanaf centrum)`)
+    }
+    console.log('\nDraai bv.:  node scripts/scrape-restaurants.mjs --tile 1-6 --dry-run')
+    return
+  }
+
+  const selected = selectTiles(tiles)
+  const scope = TILE_ARG ? `tegel(s) ${TILE_ARG} van ${tiles.length}` : `alle ${tiles.length} tegels`
+  console.log(`Yelp: zoeken in Jackson Heights (${scope})…`)
+  const businesses = await discover(selected)
+  console.log(`Gevonden: ${businesses.length} unieke zaken binnen de JH-box.`)
 
   const rows = []
   for (let i = 0; i < businesses.length; i++) {
@@ -245,7 +332,8 @@ async function main() {
 
   if (DRY) {
     const sql = rows.map(rowToSql).join('\n') + '\n'
-    const out = 'supabase/migrations/0010_restaurants_scraped.sql'
+    const suffix = TILE_ARG ? `_tile_${String(TILE_ARG).replace(/[^0-9-]/g, '')}` : ''
+    const out = `supabase/migrations/0010_restaurants_scraped${suffix}.sql`
     writeFileSync(out, '-- Gescrapete restaurants (Yelp). Idempotent.\n' + sql)
     console.log(`DRY-RUN: ${rows.length} rijen geschreven naar ${out}`)
     return
