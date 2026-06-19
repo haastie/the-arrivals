@@ -220,8 +220,11 @@ function classify(aliases, title) {
   // --- bredere groepen ---
   if (hit('chinese', 'thai', 'japanese', 'korean', 'filipino', 'vietnam', 'malaysian', 'burmese',
           'indonesian', 'asianfusion', 'sushi', 'ramen', 'hotpot', 'cantonese', 'szechuan', 'dimsum',
-          'taiwanese', 'noodles', 'izakaya'))
-    return { community: 'east_asian', lang: null }
+          'taiwanese', 'noodles', 'izakaya')) {
+    // Chinese zaken krijgen de Mandarijn-taalgids; overige Oost-Aziatische niet.
+    const lang = hit('chinese', 'cantonese', 'szechuan', 'dimsum', 'hotpot', 'taiwanese') ? 'mandarin' : null
+    return { community: 'east_asian', lang }
+  }
   if (hit('peruvian', 'venezuelan', 'argentine', 'brazilian', 'salvadoran', 'dominican', 'cuban',
           'chilean', 'bolivian', 'latin'))
     return { community: 'latin_other', lang: 'spanish' }
