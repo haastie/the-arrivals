@@ -102,7 +102,7 @@ export function MapView({
         center={JH_CENTER}
         zoom={14}
         minZoom={12}
-        maxZoom={19}
+        maxZoom={20}
         scrollWheelZoom
         zoomControl={false}
         style={{ height: '100%', width: '100%', background: '#0a0e17' }}
@@ -110,7 +110,8 @@ export function MapView({
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          maxZoom={19}
+          maxZoom={20}
+          maxNativeZoom={19}
         />
         <ZoomControl position="bottomright" />
         <FitAll restaurants={restaurants} />

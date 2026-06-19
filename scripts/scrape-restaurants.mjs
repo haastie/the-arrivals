@@ -8,7 +8,9 @@
  *      resultaten per zoekopdracht toe (limit+offset <= 240), dus we dekken JH
  *      met een raster van overlappende tegels, genummerd vanaf het hart van de
  *      buurt (37th Ave & 81st St) naar buiten. Resultaten worden ontdubbeld.
- *   2. Heuristische classificatie: Yelp-categorie -> community + taalgroep.
+ *   2. Heuristische classificatie: Yelp-categorie -> type (restaurant/nachtleven/
+ *      winkel) + community + taalgroep. Supermarkten/winkels krijgen active=false
+ *      zodat ze niet op de kaart komen; lgbtq alleen voor échte queer venues.
  *   3. Claude-verrijking (optioneel): leest reviews en schrijft community/taal,
  *      `consensus`, `dish` en 2 `quotes` (in het Nederlands).
  *   4. Upsert in Supabase (service-role) op id = "yelp-<businessId>".
@@ -149,8 +151,32 @@ function latLngToXY(lat, lng) {
 const clamp = (n) => Math.max(0, Math.min(100, Math.round(n * 10) / 10))
 
 // ---- categorie -> community + taal (heuristiek) ----------------------------
-const COMMUNITIES = ['south_asian', 'himalayan', 'colombian', 'mexican', 'ecuadorian', 'lgbtq']
+const COMMUNITIES = ['south_asian', 'himalayan', 'colombian', 'mexican', 'ecuadorian', 'lgbtq', 'other']
 const LANGS = ['hindi', 'bengali', 'nepali', 'tibetan', 'spanish']
+
+// Yelp-categorieën die GEEN eetgelegenheid zijn (supermarkten, slagers, winkels).
+const GROCERY_ALIASES = [
+  'grocery', 'intlgrocery', 'internationalgrocery', 'ethnicgrocery', 'convenience', 'markets',
+  'farmersmarket', 'butcher', 'seafoodmarkets', 'meats', 'organic_stores', 'healthmarkets',
+  'wholesale_stores', 'drugstores', 'herbsandspices', 'cheese', 'beer_and_wine', 'beverage_stores',
+  'spiritstores', 'wineries', 'importedfood', 'tobaccoshops', 'cards', 'pharmacy',
+]
+// Categorieën die op nachtleven duiden (bars/clubs).
+const NIGHTLIFE_ALIASES = [
+  'bars', 'pubs', 'lounges', 'danceclubs', 'nightlife', 'cocktailbars', 'sportsbars', 'beerbar',
+  'wine_bars', 'karaoke', 'hookah_bars', 'gaybars', 'gay_bars',
+]
+// Alleen deze duiden expliciet op een queer venue.
+const QUEER_ALIASES = ['gaybars', 'gay_bars']
+
+// Bepaalt het type zaak. 'restaurants' in de aliassen wint altijd (dan is het
+// een eetgelegenheid, ook als er een winkel-alias bij staat).
+function venueKind(aliases) {
+  const isEatery = aliases.includes('restaurants')
+  if (!isEatery && aliases.some((a) => GROCERY_ALIASES.includes(a))) return 'grocery'
+  if (!isEatery && aliases.some((a) => NIGHTLIFE_ALIASES.includes(a))) return 'nightlife'
+  return 'restaurant'
+}
 
 function classify(aliases, title) {
   const a = aliases.join(' ') + ' ' + title.toLowerCase()
@@ -235,7 +261,10 @@ Rating: ${b.rating} (${b.review_count} reviews)
 Reviews:
 ${reviews.map((r, i) => `${i + 1}. ${r}`).join('\n') || '(geen)'}
 
-Kies community_id uit: ${COMMUNITIES.join(', ')} (lgbtq alleen voor queer bars/clubs).
+Kies community_id uit: ${COMMUNITIES.join(', ')}.
+- Gebruik 'lgbtq' UITSLUITEND voor expliciet queer/gay bars of clubs (drag, Pride, gay nightlife). Een gewone Amerikaanse, Aziatische of Latijnse zaak is NOOIT 'lgbtq'.
+- Gebruik 'other' voor zaken die niet bij een specifieke gemeenschap horen (bv. Amerikaans, Chinees, Thais, fastfood, koffie).
+- Kies alleen south_asian/himalayan/colombian/mexican/ecuadorian als de keuken daar duidelijk bij hoort.
 Kies lang_group uit: ${LANGS.join(', ')} (de taal die je in de zaak hoort).
 Geef ALLEEN dit JSON-object terug (Nederlands, geen markdown):
 {"community_id":"...","lang_group":"...","consensus":"1-2 zinnen","dish":"aanbevolen gerecht","quotes":[{"text":"kort citaat","source":"Yelp-reviewer"}]}`
@@ -268,13 +297,13 @@ Geef ALLEEN dit JSON-object terug (Nederlands, geen markdown):
 }
 
 // ---- main ------------------------------------------------------------------
-function toRow(b, cls, i) {
+function toRow(b, cls, kind, i) {
   const la = b.coordinates.latitude, ln = b.coordinates.longitude
   const [x, y] = latLngToXY(la, ln)
   return {
     id: 'yelp-' + b.id,
     name: b.name,
-    community_id: cls.community_id || 'colombian',
+    community_id: cls.community_id || 'other',
     cuisine: (b.categories || [])[0]?.title || '',
     price: b.price || '',
     address: (b.location?.display_address || []).join(', '),
@@ -291,8 +320,10 @@ function toRow(b, cls, i) {
     yelp_id: b.id,
     source: 'yelp',
     photo_url: b.image_url || null,
+    kind,
     sort_order: 1000 + i,
-    active: true,
+    // Supermarkten/winkels staan standaard uit; eetgelegenheden & nachtleven aan.
+    active: kind !== 'grocery',
   }
 }
 
@@ -318,15 +349,22 @@ async function main() {
   const rows = []
   for (let i = 0; i < businesses.length; i++) {
     const b = businesses[i]
-    const guess = classify((b.categories || []).map((c) => c.alias), b.name)
+    const aliases = (b.categories || []).map((c) => c.alias)
+    const guess = classify(aliases, b.name)
+    const kind = venueKind(aliases)
     let cls = { community_id: guess.community, lang_group: guess.lang, consensus: '', dish: '', quotes: [] }
+    let reviews = []
     if (ENRICH) {
-      const reviews = await reviewsFor(b.id)
+      reviews = await reviewsFor(b.id)
       const e = await enrich(b, guess, reviews)
       if (e) cls = e
       await sleep(250)
     }
-    rows.push(toRow(b, cls, i))
+    // Vangnet: lgbtq alleen voor échte queer venues, anders terug naar gok/other.
+    const queer =
+      aliases.some((a) => QUEER_ALIASES.includes(a)) || /\b(gay|queer|lgbtq?|drag|pride)\b/i.test(reviews.join(' '))
+    if (cls.community_id === 'lgbtq' && !queer) cls.community_id = guess.community || 'other'
+    rows.push(toRow(b, cls, kind, i))
     if ((i + 1) % 20 === 0) console.log(`  verwerkt ${i + 1}/${businesses.length}`)
   }
 
@@ -341,12 +379,19 @@ async function main() {
 
   const supabase = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } })
   for (let i = 0; i < rows.length; i += 100) {
-    const chunk = rows.slice(i, i + 100)
+    let chunk = rows.slice(i, i + 100)
+    // Zonder verrijking: laat consensus/dish/quotes ongemoeid (PostgREST update
+    // alleen meegestuurde kolommen), zodat een goedkope opschoonrun de eerder
+    // gegenereerde teksten niet overschrijft.
+    if (!ENRICH) {
+      chunk = chunk.map(({ consensus, dish, dish_source, quotes, ...rest }) => rest)
+    }
     const { error } = await supabase.from('restaurants').upsert(chunk, { onConflict: 'id' })
     if (error) fail('Supabase upsert: ' + error.message)
     console.log(`  geüpload ${Math.min(i + 100, rows.length)}/${rows.length}`)
   }
-  console.log(`Klaar. ${rows.length} restaurants live in de DB.`)
+  const hidden = rows.filter((r) => !r.active).length
+  console.log(`Klaar. ${rows.length} zaken verwerkt (${hidden} winkels op non-actief).`)
 }
 
 const q = (v) => (v === null || v === undefined || v === '' ? 'null' : `'${String(v).replace(/'/g, "''")}'`)
@@ -357,9 +402,11 @@ function rowToSql(r) {
     num(r.x), num(r.y), num(r.lat), num(r.lng), q(r.lang_group), 'null',
     num(r.rating), num(r.rating_count), q(r.rating_source), q(r.consensus), q(r.dish), q(r.dish_source),
     `'${JSON.stringify(r.quotes).replace(/'/g, "''")}'::jsonb`, q(r.yelp_id), q(r.source), q(r.photo_url),
-    num(r.sort_order), 'true',
+    q(r.kind), num(r.sort_order), r.active ? 'true' : 'false',
   ]
-  return `insert into restaurants (id, name, community_id, cuisine, price, address, x, y, lat, lng, lang_group, tour, rating, rating_count, rating_source, consensus, dish, dish_source, quotes, yelp_id, source, photo_url, sort_order, active) values (${cols.join(', ')}) on conflict (id) do update set name=excluded.name, community_id=excluded.community_id, cuisine=excluded.cuisine, price=excluded.price, address=excluded.address, lat=excluded.lat, lng=excluded.lng, lang_group=excluded.lang_group, rating=excluded.rating, rating_count=excluded.rating_count, consensus=excluded.consensus, dish=excluded.dish, dish_source=excluded.dish_source, quotes=excluded.quotes, yelp_id=excluded.yelp_id, source=excluded.source, photo_url=excluded.photo_url;`
+  // consensus/dish/quotes worden alleen overschreven als er een nieuwe (niet-lege)
+  // waarde is - zo blijft bestaande verrijking behouden bij een opschoonrun.
+  return `insert into restaurants (id, name, community_id, cuisine, price, address, x, y, lat, lng, lang_group, tour, rating, rating_count, rating_source, consensus, dish, dish_source, quotes, yelp_id, source, photo_url, kind, sort_order, active) values (${cols.join(', ')}) on conflict (id) do update set name=excluded.name, community_id=excluded.community_id, cuisine=excluded.cuisine, price=excluded.price, address=excluded.address, lat=excluded.lat, lng=excluded.lng, lang_group=excluded.lang_group, rating=excluded.rating, rating_count=excluded.rating_count, consensus=case when coalesce(excluded.consensus,'')='' then restaurants.consensus else excluded.consensus end, dish=case when coalesce(excluded.dish,'')='' then restaurants.dish else excluded.dish end, dish_source=case when coalesce(excluded.dish,'')='' then restaurants.dish_source else excluded.dish_source end, quotes=case when excluded.quotes='[]'::jsonb then restaurants.quotes else excluded.quotes end, yelp_id=excluded.yelp_id, source=excluded.source, photo_url=excluded.photo_url, kind=excluded.kind, active=excluded.active;`
 }
 
 main().catch((e) => fail(e.message))
