@@ -126,6 +126,9 @@ export const PHRASE_GROUPS: PhraseGroup[] = [
       { en: 'Gekruide rijst', native: 'बिरयानी', roman: 'Biryani' },
       { en: 'Straatsnacks', native: 'चाट', roman: 'Chaat' },
       { en: 'Schotel', native: 'थाली', roman: 'Thali' },
+      { en: 'Tandoori-kip', native: 'तंदूरी चिकन', roman: 'Tandoori chicken' },
+      { en: 'Kebab', native: 'कबाब', roman: 'Kabab' },
+      { en: 'Zoete balletjes', native: 'गुलाब जामुन', roman: 'Gulab jamun' },
     ],
   },
   {
@@ -144,6 +147,7 @@ export const PHRASE_GROUPS: PhraseGroup[] = [
       { en: 'Hilsa-vis', native: 'ইলিশ', roman: 'Ilish' },
       { en: 'Zoetigheid', native: 'মিষ্টি', roman: 'Mishti' },
       { en: 'Gekruide rijst', native: 'বিরিয়ানি', roman: 'Biryani' },
+      { en: 'Waterballetjes', native: 'ফুচকা', roman: 'Phuchka' },
     ],
   },
   {
@@ -196,6 +200,8 @@ export const PHRASE_GROUPS: PhraseGroup[] = [
       { en: 'Gedompelde taco’s', native: 'Birria', roman: 'BEE-ryah' },
       { en: 'Varkensbraad', native: 'Hornado', roman: 'or-NAH-doh' },
       { en: 'Vissoep', native: 'Encebollado', roman: 'en-seh-bo-YAH-doh' },
+      { en: 'Vis-ceviche', native: 'Ceviche', roman: 'seh-VEE-cheh' },
+      { en: 'Rotisserie-kip', native: 'Pollo a la brasa', roman: 'POH-yoh ah lah BRAH-sah' },
     ],
   },
   {
