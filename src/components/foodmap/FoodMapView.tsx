@@ -95,6 +95,9 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
               </button>
             )
           })}
+          <span className="flex shrink-0 items-center gap-1 rounded-full border border-amber-glow/40 bg-amber-glow/10 px-2.5 py-1.5 text-xs whitespace-nowrap text-amber-glow backdrop-blur">
+            ★ <span className="font-semibold">4+ rating</span>
+          </span>
         </div>
       </div>
 
