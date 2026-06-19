@@ -10,8 +10,7 @@ import {
 /** Detailkaart van een geselecteerd restaurant. */
 export function RestaurantDetail({ restaurant }: { restaurant: Restaurant }) {
   const c = communityById[restaurant.communityId]
-  const { group, phrase } = restaurantPhrase(restaurant)
-  const speakText = group.roman ? phrase.roman : phrase.native
+  const lang = restaurantPhrase(restaurant)
   const dp = dishPhrase(restaurant)
 
   return (
@@ -90,19 +89,25 @@ export function RestaurantDetail({ restaurant }: { restaurant: Restaurant }) {
         )}
       </div>
 
-      <div className="rounded-2xl border border-ink/15 px-4 py-3">
-        <p className="text-[10px] font-bold tracking-[0.12em] text-ink/45 uppercase">
-          Dit hoor je hier · {group.label}
-        </p>
-        <div className="mt-2 flex items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs text-ink/55">Zeg eens — {phrase.en}</p>
-            <p className="text-lg leading-tight font-bold text-ink">{phrase.native}</p>
-            <p className="text-xs text-ink/55 italic">{phrase.roman}</p>
+      {lang && (
+        <div className="rounded-2xl border border-ink/15 px-4 py-3">
+          <p className="text-[10px] font-bold tracking-[0.12em] text-ink/45 uppercase">
+            Dit hoor je hier · {lang.group.label}
+          </p>
+          <div className="mt-2 flex items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs text-ink/55">Zeg eens — {lang.phrase.en}</p>
+              <p className="text-lg leading-tight font-bold text-ink">{lang.phrase.native}</p>
+              <p className="text-xs text-ink/55 italic">{lang.phrase.roman}</p>
+            </div>
+            <SpeakButton
+              text={lang.group.roman ? lang.phrase.roman : lang.phrase.native}
+              lang={lang.group.ttsLang}
+              size={40}
+            />
           </div>
-          <SpeakButton text={speakText} lang={group.ttsLang} size={40} />
         </div>
-      </div>
+      )}
 
       <p className="text-[11px] leading-relaxed text-ink/40">
         Ratings &amp; citaten samengevat uit publieke bronnen — Yelp, Tripadvisor, The Infatuation,
