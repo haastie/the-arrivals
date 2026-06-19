@@ -31,7 +31,7 @@ function toRestaurant(r: RestaurantRow): Restaurant {
     y: r.y,
     lat: r.lat ?? undefined,
     lng: r.lng ?? undefined,
-    langGroup: r.lang_group ?? 'spanish',
+    langGroup: r.lang_group ?? null,
     tour: r.tour ?? 0,
     rating: r.rating ?? 0,
     ratingCount: r.rating_count ?? 0,

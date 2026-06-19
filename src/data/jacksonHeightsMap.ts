@@ -35,7 +35,7 @@ export interface Restaurant {
   /** Echte coördinaten (gescrapet); anders afgeleid uit x/y. */
   lat?: number
   lng?: number
-  langGroup: string
+  langGroup: string | null
   tour: number
   rating: number
   ratingCount: number
@@ -206,9 +206,11 @@ export const JH_CENTER: [number, number] = [40.7488, -73.8839]
 export const communityById = Object.fromEntries(COMMUNITIES.map((c) => [c.id, c]))
 export const phraseGroupById = Object.fromEntries(PHRASE_GROUPS.map((g) => [g.id, g]))
 
-/** De taal die je in een restaurant hoort, met de begroeting als voorbeeld. */
-export function restaurantPhrase(r: Restaurant): { group: PhraseGroup; phrase: Phrase } {
-  const group = phraseGroupById[r.langGroup] ?? PHRASE_GROUPS[0]
+/** De taal die je in een restaurant hoort, met de begroeting als voorbeeld.
+ *  Geeft null als de zaak geen (bekende) taalgroep heeft - dan tonen we niets. */
+export function restaurantPhrase(r: Restaurant): { group: PhraseGroup; phrase: Phrase } | null {
+  const group = r.langGroup ? phraseGroupById[r.langGroup] : undefined
+  if (!group) return null
   return { group, phrase: group.phrases[0] }
 }
 

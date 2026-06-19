@@ -23,6 +23,7 @@
  *
  * GEBRUIK
  *   node scripts/scrape-restaurants.mjs --list-tiles    # toon het tegelraster
+ *   node scripts/scrape-restaurants.mjs --audit         # rapport: categorieën & indeling (geen DB/Claude)
  *   node scripts/scrape-restaurants.mjs --tile 1        # alleen tegel 1 (centrum)
  *   node scripts/scrape-restaurants.mjs --tile 1-6      # tegels 1 t/m 6
  *   node scripts/scrape-restaurants.mjs                 # alle tegels -> Supabase
@@ -76,6 +77,7 @@ const ENRICH = !has('--no-enrich')
 const LIMIT = Number(val('--limit', '2000'))
 const MODEL = val('--model', 'claude-haiku-4-5-20251001')
 const LIST_TILES = has('--list-tiles')
+const AUDIT = has('--audit') // alleen ontdekken + rapporteren (geen Claude/DB)
 const TILE_ARG = val('--tile', null) // "1", "1-6" of leeg = alle tegels
 
 const { YELP_API_KEY, ANTHROPIC_API_KEY } = process.env
@@ -83,8 +85,9 @@ const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 if (!YELP_API_KEY) fail('Zet YELP_API_KEY in je env.')
-if (ENRICH && !ANTHROPIC_API_KEY) fail('Zet ANTHROPIC_API_KEY (of gebruik --no-enrich).')
-if (!DRY && (!SUPABASE_URL || !SERVICE_KEY)) fail('Zet SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (of gebruik --dry-run).')
+// Audit raakt alleen Yelp aan; dan zijn Claude/Supabase-keys niet nodig.
+if (!AUDIT && ENRICH && !ANTHROPIC_API_KEY) fail('Zet ANTHROPIC_API_KEY (of gebruik --no-enrich).')
+if (!AUDIT && !DRY && (!SUPABASE_URL || !SERVICE_KEY)) fail('Zet SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (of gebruik --dry-run).')
 
 function fail(m) {
   console.error('FOUT: ' + m)
@@ -103,9 +106,12 @@ const inBox = (la, ln) =>
 // raster is verankerd op het hart van Jackson Heights (37th Ave & 81st St) en
 // genummerd vanaf het centrum naar buiten.
 const CENTER = { lat: 40.7489, lng: -73.8853 } // 37th Ave & 81st St
-const TILE_RADIUS = 500 // meter (zoekradius per tegel)
-const LAT_STEP = 0.005 // ~555 m
-const LNG_STEP = 0.0065 // ~550 m op deze breedtegraad
+// Kleinere tegels dan voorheen: in de drukke kern (74th/Roosevelt) zat een
+// tegel van 500 m tegen de Yelp-limiet van 240 resultaten aan. Met 400 m radius
+// en ~450 m stappen overlappen tegels ruim en raakt geen enkele tegel vol.
+const TILE_RADIUS = 400 // meter (zoekradius per tegel)
+const LAT_STEP = 0.0045 // ~500 m
+const LNG_STEP = 0.006 // ~505 m op deze breedtegraad
 
 function buildTiles() {
   const pts = []
@@ -301,6 +307,44 @@ Geef ALLEEN dit JSON-object terug (Nederlands, geen markdown):
   }
 }
 
+// ---- audit -----------------------------------------------------------------
+// Laat zien wat Yelp teruggeeft en hoe de HEURISTIEK het zou indelen (zonder
+// Claude). Zo kun je controleren of we de juiste categorieën pakken vóór een
+// volledige run. Geen Claude/Supabase nodig.
+function auditReport(businesses) {
+  const byKind = {}
+  const byCommunity = {}
+  const aliasCount = {}
+  const unmatched = [] // eetplekken die de heuristiek niet aan een community koppelt
+  for (const b of businesses) {
+    const aliases = (b.categories || []).map((c) => c.alias)
+    const kind = venueKind(aliases)
+    const guess = classify(aliases, b.name)
+    byKind[kind] = (byKind[kind] || 0) + 1
+    const comm = guess.community || (kind === 'grocery' ? '(winkel)' : 'other/onbekend')
+    byCommunity[comm] = (byCommunity[comm] || 0) + 1
+    for (const a of aliases) aliasCount[a] = (aliasCount[a] || 0) + 1
+    if (kind === 'restaurant' && !guess.community) unmatched.push(`${b.name}  [${aliases.join(', ')}]`)
+  }
+  const table = (obj) =>
+    Object.entries(obj)
+      .sort((a, b) => b[1] - a[1])
+      .map(([k, n]) => `  ${String(n).padStart(4)}×  ${k}`)
+      .join('\n')
+
+  console.log('\n================  AUDIT (heuristiek, zonder Claude)  ================')
+  console.log(`\nPer type:\n${table(byKind)}`)
+  console.log(`\nPer community (heuristische gok):\n${table(byCommunity)}`)
+  console.log(`\nYelp-categorieën die we tegenkomen (alias × aantal):\n${table(aliasCount)}`)
+  console.log(
+    `\nEetplekken die de heuristiek NIET aan een community koppelt (${unmatched.length}).` +
+      `\nClaude vangt deze normaal op; scan op keukens die we structureel missen:`,
+  )
+  unmatched.slice(0, 80).forEach((u) => console.log('  - ' + u))
+  if (unmatched.length > 80) console.log(`  … en nog ${unmatched.length - 80} meer`)
+  console.log('\n====================================================================')
+}
+
 // ---- main ------------------------------------------------------------------
 function toRow(b, cls, kind, i) {
   const la = b.coordinates.latitude, ln = b.coordinates.longitude
@@ -313,7 +357,8 @@ function toRow(b, cls, kind, i) {
     price: b.price || '',
     address: (b.location?.display_address || []).join(', '),
     x, y, lat: la, lng: ln,
-    lang_group: cls.lang_group || 'spanish',
+    // Geen taal forceren: 'other'/onbekend krijgt null (geen valse Spaanse zinnen).
+    lang_group: cls.lang_group || null,
     tour: null,
     rating: b.rating ?? null,
     rating_count: b.review_count ?? null,
@@ -350,6 +395,11 @@ async function main() {
   console.log(`Yelp: zoeken in Jackson Heights (${scope})…`)
   const businesses = await discover(selected)
   console.log(`Gevonden: ${businesses.length} unieke zaken binnen de JH-box.`)
+
+  if (AUDIT) {
+    auditReport(businesses)
+    return
+  }
 
   const rows = []
   for (let i = 0; i < businesses.length; i++) {
