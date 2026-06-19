@@ -210,7 +210,7 @@ function classify(aliases, title) {
   if (hit('mexic', 'taqueria', 'tacos', 'poblano', 'pueblan', 'puebla', 'oaxac', 'tex-mex'))
     return { community: 'mexican', lang: 'spanish' }
   if (hit('colombia', 'paisa', 'bogota')) return { community: 'colombian', lang: 'spanish' }
-  if (hit('ecuador', 'cuencan', 'manab', 'quito', 'guayaqui', 'encebollado'))
+  if (hit('ecuador', 'ecuator', 'cuenca', 'manab', 'quito', 'guayaqui', 'encebollado', 'lojano'))
     return { community: 'ecuadorian', lang: 'spanish' }
   if (hit('gaybars', 'gay_bars')) return { community: 'lgbtq', lang: null }
 
