@@ -72,6 +72,7 @@ export const COMMUNITIES: Community[] = [
   { id: 'mexican', label: 'Mexicaans', sub: 'Taquerías & cantinas', color: '#1E8A5B' },
   { id: 'ecuadorian', label: 'Ecuadoriaans', sub: 'Kust- & sierrakeuken', color: '#2563C9' },
   { id: 'lgbtq', label: 'LGBTQ+ erfgoed', sub: 'Bakermat van Queens Pride', color: '#D6336C' },
+  { id: 'other', label: 'Overig', sub: 'Amerikaans & internationaal', color: '#64748B' },
 ]
 
 export const ZONES: Record<string, Zone> = {
