@@ -24,6 +24,7 @@
  * GEBRUIK
  *   node scripts/scrape-restaurants.mjs --list-tiles    # toon het tegelraster
  *   node scripts/scrape-restaurants.mjs --audit         # rapport: categorieën & indeling (geen DB/Claude)
+ *   node scripts/scrape-restaurants.mjs --dish-coverage # top gerechten per taal (alleen Supabase)
  *   node scripts/scrape-restaurants.mjs --tile 1        # alleen tegel 1 (centrum)
  *   node scripts/scrape-restaurants.mjs --tile 1-6      # tegels 1 t/m 6
  *   node scripts/scrape-restaurants.mjs                 # alle tegels -> Supabase
@@ -78,16 +79,18 @@ const LIMIT = Number(val('--limit', '2000'))
 const MODEL = val('--model', 'claude-haiku-4-5-20251001')
 const LIST_TILES = has('--list-tiles')
 const AUDIT = has('--audit') // alleen ontdekken + rapporteren (geen Claude/DB)
+const DISH_COVERAGE = has('--dish-coverage') // alleen Supabase lezen + rapporteren
 const TILE_ARG = val('--tile', null) // "1", "1-6" of leeg = alle tegels
 
 const { YELP_API_KEY, ANTHROPIC_API_KEY } = process.env
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-if (!YELP_API_KEY) fail('Zet YELP_API_KEY in je env.')
-// Audit raakt alleen Yelp aan; dan zijn Claude/Supabase-keys niet nodig.
-if (!AUDIT && ENRICH && !ANTHROPIC_API_KEY) fail('Zet ANTHROPIC_API_KEY (of gebruik --no-enrich).')
-if (!AUDIT && !DRY && (!SUPABASE_URL || !SERVICE_KEY)) fail('Zet SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (of gebruik --dry-run).')
+if (!DISH_COVERAGE && !YELP_API_KEY) fail('Zet YELP_API_KEY in je env.')
+// Audit raakt alleen Yelp aan; dish-coverage alleen Supabase.
+if (!DISH_COVERAGE && !AUDIT && ENRICH && !ANTHROPIC_API_KEY) fail('Zet ANTHROPIC_API_KEY (of gebruik --no-enrich).')
+if ((DISH_COVERAGE || (!AUDIT && !DRY)) && (!SUPABASE_URL || !SERVICE_KEY))
+  fail('Zet SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY.')
 
 function fail(m) {
   console.error('FOUT: ' + m)
@@ -217,8 +220,11 @@ function classify(aliases, title) {
   // --- bredere groepen ---
   if (hit('chinese', 'thai', 'japanese', 'korean', 'filipino', 'vietnam', 'malaysian', 'burmese',
           'indonesian', 'asianfusion', 'sushi', 'ramen', 'hotpot', 'cantonese', 'szechuan', 'dimsum',
-          'taiwanese', 'noodles', 'izakaya'))
-    return { community: 'east_asian', lang: null }
+          'taiwanese', 'noodles', 'izakaya')) {
+    // Chinese zaken krijgen de Mandarijn-taalgids; overige Oost-Aziatische niet.
+    const lang = hit('chinese', 'cantonese', 'szechuan', 'dimsum', 'hotpot', 'taiwanese') ? 'mandarin' : null
+    return { community: 'east_asian', lang }
+  }
   if (hit('peruvian', 'venezuelan', 'argentine', 'brazilian', 'salvadoran', 'dominican', 'cuban',
           'chilean', 'bolivian', 'latin'))
     return { community: 'latin_other', lang: 'spanish' }
@@ -369,6 +375,52 @@ function auditReport(businesses) {
   console.log('\n====================================================================')
 }
 
+// ---- dekkingscheck gerechten -----------------------------------------------
+// Welke gerechten uit restaurants.dish komen het vaakst voor per taal, en zitten
+// die al in de taalgids (foods)? Klein, inline token-lijstje gespiegeld aan de
+// foods[] in src/data/jacksonHeightsMap.ts (bewust kleine duplicatie).
+const DISH_STOPWORDS = new Set([
+  'met', 'van', 'de', 'het', 'een', 'en', 'of', 'op', 'bij', 'in', 'la', 'el', 'los', 'las',
+  'con', 'del', 'the', 'and', 'style', 'set', 'weekend', 'graag',
+])
+function tokenizeDish(dish) {
+  return (dish || '')
+    .toLowerCase()
+    .replace(/[^a-zà-ÿ\s]/g, ' ')
+    .split(/\s+/)
+    .filter((t) => t.length > 2 && !DISH_STOPWORDS.has(t))
+}
+const FOOD_TOKENS = {
+  hindi: ['dosa', 'samosa', 'biryani', 'chaat', 'thali'],
+  bengali: ['macher', 'jhol', 'ilish', 'mishti', 'biryani'],
+  nepali: ['momo', 'thukpa', 'sel', 'roti', 'khana'],
+  tibetan: ['momo', 'thukpa', 'tingmo'],
+  spanish: ['arepa', 'bandeja', 'paisa', 'birria', 'taco', 'hornado', 'encebollado', 'empanada'],
+  mandarin: ['jiaozi', 'dumpling', 'miantiao', 'noodle', 'chaofan', 'rice', 'dimsum', 'huoguo'],
+}
+async function dishCoverageReport() {
+  const supabase = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } })
+  const { data, error } = await supabase.from('restaurants').select('lang_group, dish').eq('active', true)
+  if (error) fail('Supabase: ' + error.message)
+  const byLang = {}
+  for (const r of data) {
+    const lang = r.lang_group || '(geen gids)'
+    byLang[lang] ??= {}
+    for (const tok of tokenizeDish(r.dish)) byLang[lang][tok] = (byLang[lang][tok] || 0) + 1
+  }
+  console.log('\n========  DEKKING GERECHTEN (top per taal)  ========')
+  for (const lang of Object.keys(byLang).sort()) {
+    const covered = FOOD_TOKENS[lang] || []
+    const top = Object.entries(byLang[lang]).sort((a, b) => b[1] - a[1]).slice(0, 15)
+    console.log(`\n== ${lang} ==`)
+    for (const [tok, n] of top) {
+      const inFoods = covered.some((f) => f.includes(tok) || tok.includes(f))
+      console.log(`  ${String(n).padStart(3)}×  ${tok}${inFoods ? '' : '   ← ontbreekt in foods'}`)
+    }
+  }
+  console.log('\n====================================================')
+}
+
 // ---- main ------------------------------------------------------------------
 function toRow(b, cls, kind, i) {
   const la = b.coordinates.latitude, ln = b.coordinates.longitude
@@ -402,6 +454,11 @@ function toRow(b, cls, kind, i) {
 }
 
 async function main() {
+  if (DISH_COVERAGE) {
+    await dishCoverageReport()
+    return
+  }
+
   const tiles = buildTiles()
 
   if (LIST_TILES) {

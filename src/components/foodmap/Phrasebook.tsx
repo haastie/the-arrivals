@@ -18,8 +18,8 @@ export function Phrasebook({
       <div>
         <p className="text-[10px] font-bold tracking-[0.12em] text-clay uppercase">03 · Spreek de buurt</p>
         <p className="mt-1 text-sm text-ink/60">
-          Zinnen en gerechten in de talen van Roosevelt Ave. Tik op de luidspreker om ze te horen, of
-          open een pin voor de eigen zin van een zaak.
+          Bestel in de talen van Roosevelt Ave. Tik op de luidspreker om een zin te horen, of open een
+          pin voor de eigen zin van een zaak.
         </p>
       </div>
 
@@ -45,7 +45,7 @@ export function Phrasebook({
       <p className="-mt-1 text-xs text-ink/45">{group.flag}</p>
 
       <div>
-        <p className="mb-2 text-[10px] font-bold tracking-[0.12em] text-ink/45 uppercase">Zinnen</p>
+        <p className="mb-2 text-[10px] font-bold tracking-[0.12em] text-ink/45 uppercase">Bestellen</p>
         <div className="flex flex-col gap-2">
           {group.phrases.map((ph) => (
             <div
