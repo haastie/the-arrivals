@@ -39,8 +39,8 @@ on conflict (id) do update set group_id=excluded.group_id, type=excluded.type, p
 
 -- Stop 6: eet-vraag (Kabab King op de NYT-100 van 2026 + Mamdani)
 insert into questions (id, group_id, type, prompt, options, correct_index, model_answer, points, is_timeline, discussion, sort_order, active) values
-('s6-q4', 's6', 'open', 'Een restaurant uit deze buurt haalde de NYT-lijst van 100 beste restaurants (2026), en een bekende New Yorkse politicus at er demonstratief met zijn handen. Welk restaurant - en wie?', null, null,
- 'Kabab King, en Zohran Mamdani (de New Yorkse burgemeesterskandidaat/-winnaar) at er met zijn handen. Een buurtgerecht dat mainstream gaat - en tegelijk een statement dat de immigrantenkeuken van Queens hét eten van de stad is.',
+('s6-q4', 's6', 'open', 'Kabab king, hier op de hoek, staat in de 100 beste restaurants (2026) van de New York times, maar misschien nog wel belangrijker in de top 3 van Mamdani, wat moet je volgens hem bestellen', null, null,
+ 'Biryani, een rijst gerecht met kruiden en vaak langzaam gestoomd.',
  1, false, false, 4, true)
 on conflict (id) do update set group_id=excluded.group_id, type=excluded.type, prompt=excluded.prompt, options=excluded.options, correct_index=excluded.correct_index, model_answer=excluded.model_answer, points=excluded.points, is_timeline=excluded.is_timeline, discussion=excluded.discussion, sort_order=excluded.sort_order, active=excluded.active;
 
