@@ -1,12 +1,10 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { Card } from '../ui'
 import { MapView } from './MapView'
 import { RestaurantDetail } from './RestaurantDetail'
 import { Phrasebook } from './Phrasebook'
-import { HeartIcon } from './HeartIcon'
 import { useFavorites } from './useFavorites'
-import { COMMUNITIES, communityById, type Restaurant } from '../../data/jacksonHeightsMap'
+import { COMMUNITIES, type Restaurant } from '../../data/jacksonHeightsMap'
 
 const allActiveMap = () => Object.fromEntries(COMMUNITIES.map((c) => [c.id, true]))
 
@@ -16,7 +14,6 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [viewed, setViewed] = useState<string[]>([])
   const [phrasesOpen, setPhrasesOpen] = useState(false)
-  const [favoritesOpen, setFavoritesOpen] = useState(false)
   const [phraseId, setPhraseId] = useState('hindi')
   const fav = useFavorites()
 
@@ -31,7 +28,6 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
   function select(id: string) {
     setSelectedId(id)
     setPhrasesOpen(false)
-    setFavoritesOpen(false)
     setViewed((v) => (v.includes(id) ? v : [...v, id]))
   }
 
@@ -113,29 +109,18 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
         </div>
       </div>
 
-      {/* Onderste acties: taalgids + favorieten (als er niets open is) */}
-      {!selected && !phrasesOpen && !favoritesOpen && (
+      {/* Onderste actie: taalgids openen (als er niets open is) */}
+      {!selected && !phrasesOpen && (
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[1000] flex justify-center gap-2 p-3"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[1000] flex justify-center p-3"
           style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
         >
           <button
             type="button"
             onClick={() => setPhrasesOpen(true)}
-            className="pointer-events-auto flex items-center gap-2 rounded-full border border-white/15 bg-[#0a0e17]/85 px-4 py-3 text-sm font-semibold text-paper shadow-2xl backdrop-blur transition active:scale-95"
+            className="pointer-events-auto flex items-center gap-2 rounded-full border border-white/15 bg-[#0a0e17]/85 px-5 py-3 text-sm font-semibold text-paper shadow-2xl backdrop-blur transition active:scale-95"
           >
-            📖 Taalgids
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setFavoritesOpen(true)
-              fav.refetch()
-            }}
-            className="pointer-events-auto flex items-center gap-2 rounded-full border border-white/15 bg-[#0a0e17]/85 px-4 py-3 text-sm font-semibold text-paper shadow-2xl backdrop-blur transition active:scale-95"
-          >
-            <HeartIcon filled size={16} className="text-rose-300" />
-            Favorieten{fav.favoriteIds.size > 0 ? ` (${fav.favoriteIds.size})` : ''}
+            📖 Taalgids — spreek de buurt
           </button>
         </div>
       )}
@@ -158,77 +143,7 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
           <Phrasebook phraseId={phraseId} onSetPhrase={setPhraseId} />
         </Sheet>
       )}
-
-      {/* Favorieten-sheet (groepsshortlist) */}
-      {favoritesOpen && !selected && (
-        <Sheet onClose={() => setFavoritesOpen(false)}>
-          <FavoritesList restaurants={restaurants} counts={fav.counts} mine={fav.mine} onSelect={select} />
-        </Sheet>
-      )}
     </div>
-  )
-}
-
-/** Gezamenlijke favorietenlijst, gesorteerd op aantal hartjes. */
-function FavoritesList({
-  restaurants,
-  counts,
-  mine,
-  onSelect,
-}: {
-  restaurants: Restaurant[]
-  counts: Record<string, number>
-  mine: Set<string>
-  onSelect: (id: string) => void
-}) {
-  const favs = restaurants
-    .filter((r) => (counts[r.id] ?? 0) > 0)
-    .sort((a, b) => (counts[b.id] ?? 0) - (counts[a.id] ?? 0))
-
-  return (
-    <Card className="flex flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <HeartIcon filled size={18} className="text-rose-mark" />
-        <p className="font-display text-lg font-bold text-ink">Groepsfavorieten</p>
-      </div>
-      {favs.length === 0 ? (
-        <p className="text-sm text-ink/55">
-          Nog geen favorieten. Tik op het hartje bij een restaurant om er één toe te voegen — de hele
-          groep ziet hier de gezamenlijke shortlist.
-        </p>
-      ) : (
-        <div className="flex flex-col gap-2">
-          {favs.map((r) => {
-            const c = communityById[r.communityId]
-            const mineHere = mine.has(r.id)
-            return (
-              <button
-                key={r.id}
-                type="button"
-                onClick={() => onSelect(r.id)}
-                className="flex items-center gap-3 rounded-2xl border border-ink/10 bg-ink/5 px-3 py-2.5 text-left transition active:scale-[0.99]"
-              >
-                <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: c?.color }} />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-bold text-ink">{r.name}</span>
-                  <span className="block truncate text-[11px] text-ink/55">
-                    {r.cuisine} · {c?.label}
-                  </span>
-                </span>
-                <span
-                  className={`flex shrink-0 items-center gap-1 text-sm font-semibold ${
-                    mineHere ? 'text-rose-mark' : 'text-ink/45'
-                  }`}
-                >
-                  <HeartIcon filled={mineHere} size={14} />
-                  {counts[r.id] ?? 0}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      )}
-    </Card>
   )
 }
 

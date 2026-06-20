@@ -13,6 +13,10 @@ import { useContentState } from '../content/content'
 import { Button, ConnectionBadge, MultilingualGreeting, Notice, Screen } from '../components/ui'
 import { SetupNeeded } from '../components/SetupNeeded'
 import { FinishView } from '../components/FinishView'
+import { FavoritesList } from '../components/foodmap/FavoritesList'
+import { HeartIcon } from '../components/foodmap/HeartIcon'
+import { useFavorites } from '../components/foodmap/useFavorites'
+import { RESTAURANTS } from '../data/jacksonHeightsMap'
 import {
   HostActivePanel,
   HostActivityPicker,
@@ -107,6 +111,8 @@ function HostStart({
 function HostConsole({ sessionId, secret }: { sessionId: string; secret: string }) {
   const { content, loading: contentLoading } = useContentState()
   const { session, participants, answers, loading, connection, error } = useGameState(sessionId)
+  const fav = useFavorites()
+  const [showFavs, setShowFavs] = useState(false)
 
   if ((loading && !session) || (contentLoading && !content)) {
     return (
@@ -158,6 +164,29 @@ function HostConsole({ sessionId, secret }: { sessionId: string; secret: string 
           🍽 Eten- & taalkaart openen
         </Button>
       </Link>
+
+      <Button
+        variant="secondary"
+        block
+        className="mt-2"
+        onClick={() => {
+          if (!showFavs) fav.refetch()
+          setShowFavs((v) => !v)
+        }}
+      >
+        <HeartIcon filled size={18} className="text-rose-300" />
+        Groepsfavorieten{fav.favoriteIds.size > 0 ? ` (${fav.favoriteIds.size})` : ''}
+      </Button>
+
+      {showFavs && (
+        <div className="mt-3">
+          <FavoritesList
+            restaurants={content.restaurants.length ? content.restaurants : RESTAURANTS}
+            counts={fav.counts}
+            mine={fav.mine}
+          />
+        </div>
+      )}
 
       <main className="mt-4 flex flex-col gap-4">
         <HostJoinPanel session={session} />
