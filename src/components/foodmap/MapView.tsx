@@ -11,32 +11,34 @@ import {
 } from '../../data/jacksonHeightsMap'
 
 const STAR_PATH = 'M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 7.1-1.01z'
+const HEART_PATH = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'
+// Klein hartje-badge rechtsboven op de pin (favoriet van de groep).
+const heartBadge = (d: number) =>
+  `<svg width="14" height="14" viewBox="0 0 24 24" style="position:absolute;top:-6px;left:${d - 8}px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.55))"><path d="${HEART_PATH}" fill="#ef4444" stroke="#fff" stroke-width="2"/></svg>`
 
 const iconCache = new Map<string, L.DivIcon>()
-function pinIcon(color: string, selected: boolean, star: boolean): L.DivIcon {
-  const key = `${color}${selected ? '-s' : ''}${star ? '-x' : ''}`
+function pinIcon(color: string, selected: boolean, star: boolean, favorite: boolean): L.DivIcon {
+  const key = `${color}${selected ? '-s' : ''}${star ? '-x' : ''}${favorite ? '-f' : ''}`
   let icon = iconCache.get(key)
   if (!icon) {
+    let base: string
+    let d: number
     if (star) {
-      const d = selected ? 32 : 23
+      d = selected ? 32 : 23
       const glow = selected ? ` drop-shadow(0 0 3px ${color})` : ''
-      icon = L.divIcon({
-        className: '',
-        html: `<svg width="${d}" height="${d}" viewBox="0 0 24 24" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.75))${glow}"><path d="${STAR_PATH}" fill="${color}" stroke="#0a0e17" stroke-width="1.6"/></svg>`,
-        iconSize: [d, d],
-        iconAnchor: [d / 2, d / 2],
-      })
+      base = `<svg width="${d}" height="${d}" viewBox="0 0 24 24" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.75))${glow}"><path d="${STAR_PATH}" fill="${color}" stroke="#0a0e17" stroke-width="1.6"/></svg>`
     } else {
-      const d = selected ? 24 : 15
-      icon = L.divIcon({
-        className: '',
-        html: `<span style="display:block;width:${d}px;height:${d}px;border-radius:50%;background:${color};border:2px solid #0a0e17;box-shadow:${
-          selected ? `0 0 0 4px ${color}, 0 0 0 6px rgba(255,255,255,.5)` : '0 1px 4px rgba(0,0,0,.6)'
-        }"></span>`,
-        iconSize: [d, d],
-        iconAnchor: [d / 2, d / 2],
-      })
+      d = selected ? 24 : 15
+      base = `<span style="display:block;width:${d}px;height:${d}px;border-radius:50%;background:${color};border:2px solid #0a0e17;box-shadow:${
+        selected ? `0 0 0 4px ${color}, 0 0 0 6px rgba(255,255,255,.5)` : '0 1px 4px rgba(0,0,0,.6)'
+      }"></span>`
     }
+    icon = L.divIcon({
+      className: '',
+      html: `<div style="position:relative;width:${d}px;height:${d}px">${base}${favorite ? heartBadge(d) : ''}</div>`,
+      iconSize: [d, d],
+      iconAnchor: [d / 2, d / 2],
+    })
     iconCache.set(key, icon)
   }
   return icon
@@ -67,11 +69,13 @@ export function MapView({
   restaurants,
   active,
   selectedId,
+  favoriteIds,
   onSelect,
 }: {
   restaurants: Restaurant[]
   active: Record<string, boolean>
   selectedId: string | null
+  favoriteIds: Set<string>
   onSelect: (id: string) => void
 }) {
   const [map, setMap] = useState<L.Map | null>(null)
@@ -122,7 +126,7 @@ export function MapView({
               <Marker
                 key={r.id}
                 position={restaurantLatLng(r)}
-                icon={pinIcon(c?.color ?? '#888888', selectedId === r.id, r.rating > 4)}
+                icon={pinIcon(c?.color ?? '#888888', selectedId === r.id, r.rating > 4, favoriteIds.has(r.id))}
                 eventHandlers={{ click: () => onSelect(r.id) }}
               >
                 <Tooltip direction="top" offset={[0, -8]}>

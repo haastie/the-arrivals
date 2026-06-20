@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { MapView } from './MapView'
 import { RestaurantDetail } from './RestaurantDetail'
 import { Phrasebook } from './Phrasebook'
+import { useFavorites } from './useFavorites'
 import { COMMUNITIES, type Restaurant } from '../../data/jacksonHeightsMap'
 
 const allActiveMap = () => Object.fromEntries(COMMUNITIES.map((c) => [c.id, true]))
@@ -14,6 +15,7 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
   const [viewed, setViewed] = useState<string[]>([])
   const [phrasesOpen, setPhrasesOpen] = useState(false)
   const [phraseId, setPhraseId] = useState('hindi')
+  const fav = useFavorites()
 
   const counts = useMemo(() => {
     const m: Record<string, number> = {}
@@ -42,7 +44,13 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
     <div className="fixed inset-0 overflow-hidden bg-[#0a0e17]">
       {/* De kaart vult het hele scherm */}
       <div className="absolute inset-0">
-        <MapView restaurants={restaurants} active={active} selectedId={selectedId} onSelect={select} />
+        <MapView
+          restaurants={restaurants}
+          active={active}
+          selectedId={selectedId}
+          favoriteIds={fav.favoriteIds}
+          onSelect={select}
+        />
       </div>
 
       {/* Bovenste overlay: terug, titel, verras + filter/legenda */}
@@ -120,7 +128,12 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
       {/* Detail-sheet */}
       {selected && (
         <Sheet onClose={() => setSelectedId(null)}>
-          <RestaurantDetail restaurant={selected} />
+          <RestaurantDetail
+            restaurant={selected}
+            isFavorite={fav.mine.has(selected.id)}
+            favoriteCount={fav.counts[selected.id] ?? 0}
+            onToggleFavorite={() => fav.toggle(selected.id)}
+          />
         </Sheet>
       )}
 
