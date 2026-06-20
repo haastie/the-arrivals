@@ -35,7 +35,6 @@ export const questionFields = (groupOptions: { value: string; label: string }[])
   { key: 'correct_index', label: 'Index juiste optie (mc, 0-gebaseerd)', type: 'number' },
   { key: 'model_answer', label: 'Modelantwoord / rubric (open)', type: 'textarea' },
   { key: 'points', label: 'Punten', type: 'number', required: true },
-  { key: 'is_timeline', label: '🕰️ Telt mee voor Tijdlijn-kern', type: 'boolean' },
   { key: 'discussion', label: 'Discussie (niet scoren)', type: 'boolean' },
   { key: 'sort_order', label: 'Volgorde', type: 'number' },
   { key: 'active', label: 'Actief (zichtbaar)', type: 'boolean' },
@@ -118,5 +117,4 @@ export const settingsFields: Field[] = [
   { key: 'warmup_intro', label: 'Warm-up intro', type: 'textarea' },
   { key: 'mc_points', label: 'Punten mc', type: 'number' },
   { key: 'open_points', label: 'Punten open', type: 'number' },
-  { key: 'timeline_note', label: 'Tijdlijn-notitie', type: 'text' },
 ]

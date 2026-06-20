@@ -1,25 +1,23 @@
 import { useContent } from '../content/content'
-import { timelineWinners } from '../lib/score'
-import type { AnswerRow, ParticipantRow } from '../lib/db-types'
+import { overallWinners } from '../lib/score'
+import type { ParticipantRow } from '../lib/db-types'
 import { Card } from './ui'
 import { Leaderboard } from './Leaderboard'
 
 export function FinishView({
   participants,
-  answers,
   highlightId,
 }: {
   participants: ParticipantRow[]
-  answers: AnswerRow[]
   highlightId?: string
 }) {
-  const { meta, stops, timelineQuestionIds } = useContent()
-  // Slot = de laatste discussievraag in de tour (v2: Jahn's, s10).
+  const { meta, stops } = useContent()
+  // Slot = de laatste discussievraag in de tour.
   const slotQuestion = [...stops]
     .reverse()
     .flatMap((s) => s.questions)
     .find((q) => q.discussion)
-  const { winners, topScore } = timelineWinners(participants, answers, timelineQuestionIds)
+  const { winners, topScore } = overallWinners(participants)
 
   return (
     <div className="ta-rise flex flex-col gap-5">
@@ -33,16 +31,11 @@ export function FinishView({
 
       {winners.length > 0 && (
         <Card accent>
-          <div className="text-xs font-semibold tracking-wider text-clay uppercase">
-            🕰️ Tijdlijn-winnaar
-          </div>
+          <div className="text-xs font-semibold tracking-wider text-clay uppercase">🏆 Winnaar</div>
           <p className="font-display mt-1 text-xl font-bold text-ink">
             {winners.map((w) => w.name).join(' & ')}
           </p>
-          <p className="text-sm text-ink/60">
-            {topScore} punten op de {timelineQuestionIds.length} Tijdlijn-vragen - de kers van de
-            sundae 🍒
-          </p>
+          <p className="text-sm text-ink/60">{topScore} punten - de hoogste score van de dag 🍒</p>
         </Card>
       )}
 
@@ -50,12 +43,7 @@ export function FinishView({
         <h3 className="mb-2 text-sm font-semibold tracking-wide text-ink/50 uppercase">
           Totaalklassement
         </h3>
-        <Leaderboard
-          participants={participants}
-          answers={answers}
-          highlightId={highlightId}
-          showTimeline
-        />
+        <Leaderboard participants={participants} highlightId={highlightId} />
       </Card>
 
       {slotQuestion && (

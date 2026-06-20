@@ -104,7 +104,7 @@ function AdminConsole({ secret }: { secret: string }) {
             <RowItem
               key={q.id}
               title={q.prompt}
-              subtitle={`${q.type} · ${q.points}p${q.isTimeline ? ' · 🕰️' : ''}`}
+              subtitle={`${q.type} · ${q.points}p`}
               onEdit={() => setEditing(dbQuestion(q, group))}
               onDelete={() => save(() => adminDeleteQuestion(secret, q.id))}
             />
@@ -273,7 +273,6 @@ function dbQuestion(q: Question, group: string): Row {
     correct_index: q.correctIndex ?? '',
     model_answer: q.modelAnswer ?? '',
     points: q.points,
-    is_timeline: q.isTimeline ?? false,
     discussion: q.discussion ?? false,
     active: true,
   }
@@ -328,6 +327,5 @@ function dbSettings(meta: Meta, warmupIntro: string): Row {
     warmup_intro: warmupIntro,
     mc_points: meta.scoring.mcPoints,
     open_points: meta.scoring.openPoints,
-    timeline_note: meta.scoring.timelineNote,
   }
 }

@@ -24,7 +24,7 @@ import {
   HostJoinPanel,
   HostLeaderboard,
   HostLobby,
-  HostQuestionPicker,
+  HostStopGuide,
   HostTestTools,
 } from '../components/host'
 
@@ -201,9 +201,7 @@ function HostConsole({ sessionId, secret }: { sessionId: string; secret: string 
         {session.phase === 'live' && (
           <>
             <HostActivePanel ctx={ctx} />
-            {(session.active_status === 'idle' || !session.active_question_id) && (
-              <HostQuestionPicker session={session} secret={secret} />
-            )}
+            <HostStopGuide session={session} secret={secret} />
             <HostActivityPicker session={session} secret={secret} />
             <HostLeaderboard ctx={ctx} />
             <HostTestTools session={session} secret={secret} />
@@ -212,7 +210,7 @@ function HostConsole({ sessionId, secret }: { sessionId: string; secret: string 
 
         {session.phase === 'finished' && (
           <>
-            <FinishView participants={participants} answers={answers} />
+            <FinishView participants={participants} />
             <HostLeaderboard ctx={ctx} />
           </>
         )}

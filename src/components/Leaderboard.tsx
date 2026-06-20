@@ -1,24 +1,18 @@
 import { rankParticipants } from '../lib/score'
-import { useContent } from '../content/content'
-import type { AnswerRow, ParticipantRow } from '../lib/db-types'
+import type { ParticipantRow } from '../lib/db-types'
 
 const medal = ['🥇', '🥈', '🥉']
 
 export function Leaderboard({
   participants,
-  answers,
   highlightId,
-  showTimeline = false,
   compact = false,
 }: {
   participants: ParticipantRow[]
-  answers: AnswerRow[]
   highlightId?: string
-  showTimeline?: boolean
   compact?: boolean
 }) {
-  const { timelineQuestionIds } = useContent()
-  const ranked = rankParticipants(participants, answers, timelineQuestionIds)
+  const ranked = rankParticipants(participants)
 
   if (ranked.length === 0) {
     return <p className="text-sm text-ink/50">Nog geen deelnemers.</p>
@@ -42,11 +36,6 @@ export function Leaderboard({
               {p.name}
               {isMe && <span className="ml-1 text-xs font-normal text-ink/50">(jij)</span>}
             </span>
-            {showTimeline && (
-              <span className="shrink-0 text-xs text-ink/50" title="Tijdlijn-score">
-                🕰️ {p.timelineScore}
-              </span>
-            )}
             <span className="shrink-0 text-lg font-bold tabular-nums text-clay">{p.score}</span>
           </li>
         )

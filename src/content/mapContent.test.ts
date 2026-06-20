@@ -51,9 +51,6 @@ describe('mapContent', () => {
   it('activiteiten bij de juiste stop', () => {
     expect(c.stops[0].activities?.[0].id).toBe('a1')
   })
-  it('timelineQuestionIds afgeleid', () => {
-    expect(c.timelineQuestionIds).toEqual(['s1-q1'])
-  })
   it('findQuestion en findActivity', () => {
     expect(c.findQuestion('s1-q1')?.stop?.id).toBe('s1')
     expect(c.findActivity('a1')?.stop.id).toBe('s1')
