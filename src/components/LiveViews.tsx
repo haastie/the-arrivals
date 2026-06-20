@@ -3,7 +3,6 @@ import type { Question, Stop, Activity } from '../content/types'
 import { submitLiveAnswer } from '../lib/api'
 import type { ActiveStatus, AnswerRow } from '../lib/db-types'
 import type { ParticipantIdentity } from '../lib/identity'
-import { useContent } from '../content/content'
 import { Button, Card, Notice } from './ui'
 import { StopHeader } from './StopHeader'
 
@@ -53,8 +52,6 @@ export function LiveQuestionView({
   const [err, setErr] = useState<string | null>(null)
   const isOpen = status === 'open'
   const revealed = status === 'revealed'
-  const { isTimelineQuestion } = useContent()
-  const timeline = isTimelineQuestion(question.id)
 
   async function pick(index: number) {
     if (!isOpen || busy) return
@@ -98,7 +95,6 @@ export function LiveQuestionView({
 
       <Card accent={isOpen}>
         <div className="mb-2 flex items-center gap-2 text-xs font-semibold tracking-wider uppercase">
-          {timeline && <span className="text-amber-glow">🕰️ Tijdlijn</span>}
           <span className="text-ink/40">
             {isOpen ? 'Actieve vraag' : status === 'locked' ? 'Gesloten' : revealed ? 'Onthuld' : ''}
           </span>

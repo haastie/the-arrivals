@@ -134,14 +134,12 @@ export function HostQuestionPicker({ session, secret }: { session: PublicSession
 }
 
 function QuestionPushRow({ q, onPush }: { q: Question; onPush: () => void }) {
-  const { isTimelineQuestion } = useContent()
   const [busy, setBusy] = useState(false)
   return (
     <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2">
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase">
           <span className={q.type === 'mc' ? 'text-sky-700' : 'text-clay'}>{q.type}</span>
-          {isTimelineQuestion(q.id) && <span className="text-amber-600">🕰️</span>}
           <span className="text-ink/40">{q.points}p</span>
         </div>
         <p className="truncate text-sm text-ink">{q.prompt}</p>
@@ -295,7 +293,6 @@ export function HostActivePanel({ ctx }: { ctx: HostCtx }) {
 }
 
 function ActivePanelHeader({ stop, q, status }: { stop?: Stop; q: Question; status: ActiveStatus }) {
-  const { isTimelineQuestion } = useContent()
   const label =
     status === 'open' ? 'Open - inzendingen komen binnen'
       : status === 'locked' ? 'Gesloten'
@@ -304,7 +301,6 @@ function ActivePanelHeader({ stop, q, status }: { stop?: Stop; q: Question; stat
     <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase">
       <span className="text-ink/40">{stop ? `Stop ${stop.number}` : 'Warm-up'}</span>
       <span className={q.type === 'mc' ? 'text-sky-700' : 'text-clay'}>{q.type}</span>
-      {isTimelineQuestion(q.id) && <span className="text-amber-600">🕰️</span>}
       <span className="text-jade">{label}</span>
     </div>
   )

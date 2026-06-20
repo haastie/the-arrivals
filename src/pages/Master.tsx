@@ -212,7 +212,7 @@ function HostConsole({ sessionId, secret }: { sessionId: string; secret: string 
 
         {session.phase === 'finished' && (
           <>
-            <FinishView participants={participants} answers={answers} />
+            <FinishView participants={participants} />
             <HostLeaderboard ctx={ctx} />
           </>
         )}

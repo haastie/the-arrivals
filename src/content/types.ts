@@ -13,7 +13,6 @@ export interface Question {
   /** Alleen bij open: rubric voor de host */
   modelAnswer?: string
   points: number
-  isTimeline?: boolean
   /** Alleen de slotvraag: tonen, niet scoren */
   discussion?: boolean
 }
@@ -71,7 +70,6 @@ export interface Meta {
   scoring: {
     mcPoints: number
     openPoints: number
-    timelineNote: string
   }
 }
 
@@ -79,7 +77,6 @@ export interface Content {
   meta: Meta
   warmup: Warmup
   stops: Stop[]
-  timelineQuestionIds: string[]
 }
 
 // --- DB-rijen (zie supabase/migrations/0002_cms.sql) ---

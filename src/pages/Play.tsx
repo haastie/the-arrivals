@@ -119,7 +119,6 @@ export default function Play() {
               <div className="rounded-3xl bg-paper p-3">
                 <Leaderboard
                   participants={participants}
-                  answers={answers}
                   highlightId={me.participantId}
                   compact
                 />
@@ -131,7 +130,6 @@ export default function Play() {
         {session.phase === 'finished' && (
           <FinishView
             participants={participants}
-            answers={answers}
             highlightId={me.participantId}
           />
         )}
