@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useContent } from '../content/content'
+import { STOP_PLAYBOOK, type StopPlaybook } from '../content/stopPlaybook'
 import type { Question, Stop } from '../content/types'
 import type { ActiveStatus, AnswerRow, ParticipantRow, PublicSession } from '../lib/db-types'
 import {
@@ -84,55 +85,6 @@ export function HostLobby({
   )
 }
 
-// --- Vraag kiezen en pushen --------------------------------------------
-export function HostQuestionPicker({ session, secret }: { session: PublicSession; secret: string }) {
-  const { stopsWithQuestions, warmup } = useContent()
-  const [open, setOpen] = useState<string | null>(stopsWithQuestions[0]?.id ?? null)
-
-  async function push(q: Question) {
-    await hostPushQuestion(session.id, secret, q.id)
-  }
-
-  return (
-    <Card>
-      <h3 className="font-display text-lg font-bold">Kies een vraag</h3>
-      <p className="mt-1 text-sm text-ink/60">Tik een stop open en stuur een vraag naar de groep.</p>
-
-      <div className="mt-3 flex flex-col gap-2">
-        {stopsWithQuestions.map((stop) => (
-          <div key={stop.id} className="overflow-hidden rounded-2xl bg-ink/5">
-            <button
-              onClick={() => setOpen((v) => (v === stop.id ? null : stop.id))}
-              className="flex w-full items-center justify-between px-4 py-3 text-left"
-            >
-              <span className="text-sm font-semibold text-ink">
-                Stop {stop.number} · {stop.name}
-              </span>
-              <span className="text-ink/40">{open === stop.id ? '▲' : '▼'}</span>
-            </button>
-            {open === stop.id && (
-              <div className="flex flex-col gap-2 px-3 pb-3">
-                {stop.questions.map((q) => (
-                  <QuestionPushRow key={q.id} q={q} onPush={() => push(q)} />
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <details className="mt-3">
-        <summary className="cursor-pointer text-sm text-ink/50">Warm-up-vragen (ook pushbaar)</summary>
-        <div className="mt-2 flex flex-col gap-2">
-          {warmup.questions.map((q) => (
-            <QuestionPushRow key={q.id} q={q} onPush={() => hostPushQuestion(session.id, secret, q.id)} />
-          ))}
-        </div>
-      </details>
-    </Card>
-  )
-}
-
 function QuestionPushRow({ q, onPush }: { q: Question; onPush: () => void }) {
   const [busy, setBusy] = useState(false)
   return (
@@ -157,6 +109,143 @@ function QuestionPushRow({ q, onPush }: { q: Question; onPush: () => void }) {
         className="shrink-0 px-3 py-2 text-sm"
       >
         Stuur
+      </Button>
+    </div>
+  )
+}
+
+// --- Draaiboek per stop (hoofdinfo + verhaal + vragen op hun plek) ------
+export function HostStopGuide({ session, secret }: { session: PublicSession; secret: string }) {
+  const { stops, warmup } = useContent()
+  const [open, setOpen] = useState<string | null>(null)
+  const toggle = (id: string) => setOpen((o) => (o === id ? null : id))
+
+  return (
+    <Card>
+      <h3 className="font-display text-lg font-bold">Draaiboek per stop</h3>
+      <p className="mt-1 text-sm text-ink/60">
+        Tik een stop open: hoofdinfo, het verhaal in bullets, en stuur de vragen op hun plek.
+      </p>
+      <div className="mt-3 flex flex-col gap-2">
+        {warmup.questions.length > 0 && (
+          <GuideBlock title="Warm-up-vragen" isOpen={open === 'warmup'} onToggle={() => toggle('warmup')}>
+            <div className="flex flex-col gap-2 px-3 pb-3">
+              {warmup.questions.map((q) => (
+                <QuestionPushRow key={q.id} q={q} onPush={() => hostPushQuestion(session.id, secret, q.id)} />
+              ))}
+            </div>
+          </GuideBlock>
+        )}
+        {stops.map((stop) => {
+          const pb = STOP_PLAYBOOK[stop.id]
+          if (!pb) return null
+          return (
+            <GuideBlock
+              key={stop.id}
+              title={`Stop ${stop.number} · ${stop.name}`}
+              badge={stop.optional ? 'optioneel' : undefined}
+              isOpen={open === stop.id}
+              onToggle={() => toggle(stop.id)}
+            >
+              <StopScript pb={pb} session={session} secret={secret} />
+            </GuideBlock>
+          )
+        })}
+      </div>
+    </Card>
+  )
+}
+
+function GuideBlock({
+  title,
+  badge,
+  isOpen,
+  onToggle,
+  children,
+}: {
+  title: string
+  badge?: string
+  isOpen: boolean
+  onToggle: () => void
+  children: ReactNode
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl bg-ink/5">
+      <button onClick={onToggle} className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left">
+        <span className="flex flex-wrap items-center gap-2 text-sm font-semibold text-ink">
+          {title}
+          {badge && (
+            <span className="rounded-full bg-ink/10 px-2 py-0.5 text-[10px] font-bold tracking-wider text-ink/50 uppercase">
+              {badge}
+            </span>
+          )}
+        </span>
+        <span className="shrink-0 text-ink/40">{isOpen ? '▲' : '▼'}</span>
+      </button>
+      {isOpen && children}
+    </div>
+  )
+}
+
+function StopScript({ pb, session, secret }: { pb: StopPlaybook; session: PublicSession; secret: string }) {
+  return (
+    <div className="flex flex-col gap-3 px-3 pb-3">
+      <div className="rounded-2xl bg-amber-glow/10 px-3 py-2.5">
+        <p className="text-[10px] font-bold tracking-[0.12em] text-clay uppercase">Hoofdinfo</p>
+        <ul className="mt-1.5 flex flex-col gap-1.5">
+          {pb.hoofdinfo.map((h, i) => (
+            <li key={i} className="flex gap-2 text-sm leading-snug text-ink">
+              <span className="text-clay">•</span>
+              <span>{h}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="flex flex-col gap-2">
+        {pb.script.map((beat, i) =>
+          beat.kind === 'note' ? (
+            <p key={i} className="flex gap-2 text-sm leading-snug text-ink/75">
+              <span className="text-ink/30">•</span>
+              <span>{beat.text}</span>
+            </p>
+          ) : (
+            <ScriptQuestion key={i} id={beat.id} session={session} secret={secret} />
+          ),
+        )}
+      </div>
+    </div>
+  )
+}
+
+function ScriptQuestion({ id, session, secret }: { id: string; session: PublicSession; secret: string }) {
+  const { findQuestion } = useContent()
+  const [busy, setBusy] = useState(false)
+  const loc = findQuestion(id)
+  if (!loc) return null
+  const q = loc.question
+  const active = session.active_question_id === id
+  return (
+    <div className={`rounded-2xl border px-3 py-2.5 ${active ? 'border-jade bg-jade/10' : 'border-clay/30 bg-clay/5'}`}>
+      <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-wider uppercase">
+        <span className="text-clay">{q.discussion ? 'Slotvraag' : 'Vraag'}</span>
+        <span className="text-ink/40">{q.type}</span>
+      </div>
+      <p className="mt-1 text-sm font-semibold text-ink">{q.prompt}</p>
+      <Button
+        block
+        variant="neutral"
+        className="mt-2 min-h-0 py-2 text-sm"
+        disabled={busy || active}
+        onClick={async () => {
+          setBusy(true)
+          try {
+            await hostPushQuestion(session.id, secret, id)
+          } finally {
+            setBusy(false)
+          }
+        }}
+      >
+        {active ? 'Nu actief' : 'Stuur naar groep →'}
       </Button>
     </div>
   )
