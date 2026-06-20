@@ -154,12 +154,13 @@ Drie dingen om in je achterhoofd te houden terwijl je vertelt:
 
 ---
 
-## STOP 9 · Travers Park + 34th Ave Open Street — Het Nu (pandemie)
+## STOP 9 · Travers Park + 34th Ave Open Street — Het Nu & het Slot (pandemie)
 
 > **HOOFDINFO**
 > - Jackson Heights was voorjaar 2020 het **epicentrum van de COVID-uitbraak** in NYC.
 > - Uit de crisis groeide de **34th Avenue Open Street** (±2 mijl autovrij) — *wordt beschreven als* "de eerste superblock van New York".
 > - Van afgeschermde privételuin (1910) naar heroverde publieke straat (2020): het hele verhaal in één gebaar.
+> - **Dit is nu het slot van de tour.** Sluit hier af met de slotvraag ("Van wie is deze buurt nu — en wie bepaalt dat morgen?") en laat de groep het laatste woord. Jahn's (Stop 10) is een **optionele** afsluiter met ijs.
 
 **Waarom juist hier zo hard.** Twee dingen maakten deze buurt extreem kwetsbaar in 2020: dichtheid en beroep. De gedeelde kelderwoningen (zie Stop 7) maakten isolatie vrijwel onmogelijk, en de bewoners ervan — taxichauffeurs, bezorgers, schoonmakers, zorgmedewerkers — waren precies de "essentiële werkers" die niet konden thuiswerken. Elmhurst Hospital, vlakbij, werd het nationale symbool van een overbelast zorgsysteem; de beelden van koelwagens als tijdelijke mortuaria gingen de wereld over. Het is geen toeval dat Lorena Borjas in deze weken stierf. De buurt betaalde de hoogste prijs van de stad, en die prijs werd vooral betaald door de mensen uit de onzichtbare, informele stad van Stop 4.
 
@@ -169,9 +170,10 @@ Drie dingen om in je achterhoofd te houden terwijl je vertelt:
 
 ---
 
-## STOP 10 · Jahn's — Het Slot
+## STOP 10 · Jahn's — Optionele epiloog
 
 > **HOOFDINFO**
+> - **Optioneel** — de tour sluit inhoudelijk af bij Stop 9; Jahn's is een bonus-afsluiter met ijs als de groep nog tijd en zin heeft.
 > - **Jahn's**: de keten begon in 1897 (Bronx); **deze vestiging draait sinds 1959** en is de laatste die nog open is (gerenoveerd 2025).
 > - Handelsmerk: de **Kitchen Sink Sundae for eight** — alleen samen op te eten.
 
