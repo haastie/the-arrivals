@@ -1,5 +1,6 @@
 import { Card } from '../ui'
 import { SpeakButton } from './SpeakButton'
+import { HeartIcon } from './HeartIcon'
 import {
   communityById,
   dishPhrase,
@@ -8,7 +9,17 @@ import {
 } from '../../data/jacksonHeightsMap'
 
 /** Detailkaart van een geselecteerd restaurant. */
-export function RestaurantDetail({ restaurant }: { restaurant: Restaurant }) {
+export function RestaurantDetail({
+  restaurant,
+  isFavorite = false,
+  favoriteCount = 0,
+  onToggleFavorite,
+}: {
+  restaurant: Restaurant
+  isFavorite?: boolean
+  favoriteCount?: number
+  onToggleFavorite?: () => void
+}) {
   const c = communityById[restaurant.communityId]
   const lang = restaurantPhrase(restaurant)
   const dp = dishPhrase(restaurant)
@@ -25,6 +36,27 @@ export function RestaurantDetail({ restaurant }: { restaurant: Restaurant }) {
         </span>
         <h2 className="font-display mt-2 text-2xl leading-tight font-bold text-ink">{restaurant.name}</h2>
       </div>
+
+      {onToggleFavorite && (
+        <button
+          type="button"
+          onClick={onToggleFavorite}
+          aria-pressed={isFavorite}
+          className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 text-sm font-semibold transition active:scale-[0.98] ${
+            isFavorite
+              ? 'border-rose-mark/40 bg-rose-mark/10 text-rose-mark'
+              : 'border-ink/20 bg-transparent text-ink hover:bg-ink/5'
+          }`}
+        >
+          <HeartIcon filled={isFavorite} size={18} />
+          {isFavorite ? 'Favoriet' : 'Bewaar als favoriet'}
+          {favoriteCount > 0 && (
+            <span className={isFavorite ? 'opacity-70' : 'text-ink/45'}>
+              · {favoriteCount} {favoriteCount === 1 ? 'persoon' : 'mensen'}
+            </span>
+          )}
+        </button>
+      )}
 
       <div className="flex items-stretch gap-3">
         <div
