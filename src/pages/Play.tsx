@@ -10,6 +10,7 @@ import { WarmupView } from '../components/WarmupView'
 import { ActivityView, LiveQuestionView, WaitingView } from '../components/LiveViews'
 import { Leaderboard } from '../components/Leaderboard'
 import { FinishView } from '../components/FinishView'
+import { ViewSwitch } from '../components/ViewSwitch'
 
 export default function Play() {
   const navigate = useNavigate()
@@ -87,6 +88,10 @@ export default function Play() {
           <ConnectionBadge status={connection} />
         </div>
       </header>
+
+      <div className="mb-4 flex justify-center">
+        <ViewSwitch current="quiz" />
+      </div>
 
       <main className="flex-1">
         {session.phase === 'warmup' && (

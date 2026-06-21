@@ -9,7 +9,14 @@ import { COMMUNITIES, type Restaurant } from '../../data/jacksonHeightsMap'
 const allActiveMap = () => Object.fromEntries(COMMUNITIES.map((c) => [c.id, true]))
 
 /** Volledig scherm: kaart met overlays voor filter/legenda en detail-sheets. */
-export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
+export function FoodMapView({
+  restaurants,
+  navSlot,
+}: {
+  restaurants: Restaurant[]
+  /** Overschrijft de terug-knop linksboven (bv. de quiz/eten-schakelaar voor deelnemers). */
+  navSlot?: ReactNode
+}) {
   const [active, setActive] = useState<Record<string, boolean>>(allActiveMap)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [viewed, setViewed] = useState<string[]>([])
@@ -59,17 +66,23 @@ export function FoodMapView({ restaurants }: { restaurants: Restaurant[] }) {
         style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
       >
         <div className="pointer-events-auto flex items-center gap-2">
-          <Link
-            to="/"
-            aria-label="Terug"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/15 bg-[#0a0e17]/80 text-lg text-paper backdrop-blur transition active:scale-95"
-          >
-            ←
-          </Link>
-          <div className="flex-1 rounded-2xl border border-white/10 bg-[#0a0e17]/80 px-3 py-1.5 backdrop-blur">
-            <p className="font-mono text-[9px] tracking-[0.18em] text-paper/45 uppercase">Eten & taal</p>
-            <p className="font-display text-base leading-tight font-bold text-paper">Jackson Heights</p>
-          </div>
+          {navSlot ?? (
+            <Link
+              to="/"
+              aria-label="Terug"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/15 bg-[#0a0e17]/80 text-lg text-paper backdrop-blur transition active:scale-95"
+            >
+              ←
+            </Link>
+          )}
+          {navSlot ? (
+            <div className="flex-1" />
+          ) : (
+            <div className="flex-1 rounded-2xl border border-white/10 bg-[#0a0e17]/80 px-3 py-1.5 backdrop-blur">
+              <p className="font-mono text-[9px] tracking-[0.18em] text-paper/45 uppercase">Eten & taal</p>
+              <p className="font-display text-base leading-tight font-bold text-paper">Jackson Heights</p>
+            </div>
+          )}
           <button
             type="button"
             onClick={surprise}
